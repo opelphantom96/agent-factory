@@ -1,0 +1,18 @@
+{
+  "acceptance": [
+    "Legend lists Speed, Throttle, Gear and DRS zone with their colours",
+    "Legend is visible on the dashboard",
+    "Tests pass (npm test)"
+  ],
+  "change": "tickets/changes/t-003-legend.mjs",
+  "files": [
+    "src/demo/features.js"
+  ],
+  "goal": "Make the dashboard self-explanatory: a colour legend for every trace.",
+  "id": "T-003",
+  "status": "done",
+  "tests": [
+    "src/demo/legend.test.js"
+  ],
+  "title": "Add a colour legend to the dashboard"
+}

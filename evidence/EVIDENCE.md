@@ -1,0 +1,82 @@
+# Evidence Log — Qodo Hackathon 2026
+
+**Project:** Agent Factory (autonomous pipeline) + F1 telemetry demo app.
+**Repo:** `~/workspace/qodo-hackathon/agent-factory/` (local git repo; not yet
+pushed — needs the user's GitHub account).
+**Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
+"You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
+**Status at last update:** 14 Nov 2026 ~18:25 WIB. 12/12 tests pass,
+`npm run verify` green, 4/4 factory tickets APPROVED.
+
+## How to read this log
+
+- ✅ **Done locally** — ran here, artifact linked, reproducible with the
+  command shown.
+- ⏳ **Pending user** — needs the user's Qodo account, GitHub account, or a
+  daily email that has not arrived yet. The integration is wired; the run is
+  not faked.
+- 🔎 **Inferred** — challenge wording reconstructed from the weekly theme +
+  neighbouring days; the daily email is authoritative and this log will be
+  corrected if it disagrees.
+
+## Week 1 — Build your first reviewed pull request
+
+| Day | Challenge | Evidence |
+|---|---|---|
+| Day 1 (2 Nov) | PICK. SHARE. VERIFY. | ✅ Project picked: Agent Factory + F1 telemetry demo (`README.md`). Idea shared: this repo + this log. First reviewed PR: local git history — `scaffold` → `demo app` → `factory` → `tickets`. Qodo review of the first PR: ⏳ pending Qodo account (pipeline stage wired in `src/factory/qodo.js`; local reviewer ran, record marked "local fallback"). |
+| Day 2 (3 Nov) | WRITE. REVIEW. SHARE. (AGENTS.md) | ✅ `AGENTS.md` — project description, setup + verify commands, 5 rules. Reviewed by the factory plan-review stage (rules machine-checked on every run, see run records). |
+| Day 3 (4 Nov) 🔎 | First implementation slice + PR | ✅ Demo app core built: `src/demo/telemetry.js` + `render.js` → working dashboard `apps/f1-telemetry/index.html` (speed / throttle / gear charts + stats). Tests: `src/demo/telemetry.test.js` (6 tests). |
+| Day 4 (5 Nov) 🔎 | Automation: ticket "Ready to Build" → agent runs | ✅ `scripts/automation.mjs` — watches `tickets/`, auto-runs the factory on `ready` tickets, updates status. Verified: scan after T-001–T-004 reports "no ready tickets". Real Linear/Codex wiring: ⏳ pending accounts. |
+| Day 5 (6 Nov) 🔎 | First reviewed PR merged | ✅ Ticket T-001 ran end-to-end: spec → plan review → implement → code review → verify → **APPROVED**. Record: `evidence/runs/T-001-2026-11-14T11-20-36-333Z.json`. |
+
+## Week 2 — Set standards for your project
+
+| Day | Challenge | Evidence |
+|---|---|---|
+| Day 6 (9 Nov) | REVIEW A TICKET (Codebase Wisdom) | ✅ Every ticket is reviewed against `AGENTS.md` before implementing (plan-review stage, `src/factory/review.js`). Qodo Codebase Wisdom call: ⏳ pending account — integration point documented in `docs/ARCHITECTURE.md`. |
+| Day 7 (10 Nov) | PR Resolver skill | ✅ Demonstrated for real through the pipeline on ticket T-004: code review flagged 1 blocker (`missing-test`); the PR Resolver generated the smoke test `src/demo/topspeed.test.js`, re-verified, ticket **APPROVED** with "1 finding auto-fixed". Record: `evidence/runs/T-004-2026-11-14T11-21-06-213Z.json`. T-004 intentionally shipped without a test to exercise this loop (stated in the ticket). |
+| Day 8 (11 Nov) 🔎 | Standards / Rule Miner | ✅ `npm run mine-rules` (Rule Miner stand-in) scanned 14 source files on 14 Nov: 2 proposed rules — (1) keep `console.log` in the CLI layer only (11 occurrences, all intentional factory logging); (2) every module ships with a test file (8 factory/demo modules currently untested — noted as follow-up, does not block the demo). Real Qodo Rule Miner: ⏳ pending account. |
+| Day 9 (12 Nov) 🔎 | Standards applied | ✅ `npm run verify` gate (syntax-check all sources + `node --test` + demo rebuild) green; CI workflow `.github/workflows/ci.yml` enforces it on every push/PR. |
+| Day 10 (13 Nov) 🔎 | Week 2 wrap-up: standards documented + shared | ✅ Standards in `AGENTS.md` + `docs/ARCHITECTURE.md` + `docs/CHALLENGES.md`; this file is the shareable record. |
+
+## Factory runs (all APPROVED)
+
+| Ticket | Feature added to the demo | Evidence record |
+|---|---|---|
+| T-001 | DRS zones overlay (detect + shade + list) | `evidence/runs/T-001-2026-11-14T11-20-36-333Z.json` |
+| T-002 | Lap comparison table (3 sectors + full lap vs reference lap) | `evidence/runs/T-002-2026-11-14T11-20-40-188Z.json` |
+| T-003 | Colour legend | `evidence/runs/T-003-2026-11-14T11-20-42-638Z.json` |
+| T-004 | Top-speed marker (PR Resolver demo — see Day 7) | `evidence/runs/T-004-2026-11-14T11-21-06-213Z.json` |
+
+Final dashboard: `apps/f1-telemetry/index.html` — verified to contain DRS
+zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **12/12
+pass** (`npm test`).
+
+## Week 3–4 + finale (16 Nov – 2 Dec)
+
+⏳ Not started — exact daily instructions arrive by email starting **Mon
+16 Nov**. The factory already implements the W4 theme (verify →
+approve/escalate) end-to-end; W3/W4 work starts when the emails land.
+
+## Still needs the user
+
+1. **Qodo product account** — create at qodo.ai (free hackathon license) and
+   sign in to the Qodo CLI. Until then every review record honestly says
+   "qodo: unavailable — local fallback". This unlocks real Qodo reviews,
+   Rule Miner, and Codebase Wisdom.
+2. **GitHub account + repo** — create the repo (public, MIT) and push this
+   local git repo (`git remote add origin … && git push`). The final
+   submission needs a repo link.
+3. **Daily email Mon 16 Nov** — contains the Week 3 challenge instructions
+   and the GitHub Discussion links for submitting each challenge + the final
+   project. Forward/share it when it arrives (or check Gmail — the mailbox
+   is connected).
+4. **Final submission** — repo link + short write-up via the GitHub
+   Discussion link from the daily email, before **3 Dec 2026 15:00 WIB**.
+
+## Weekly merch rounds
+
+W1 (2–8 Nov) and W2 (9–15 Nov) closed before registration — not attainable.
+W3 (16–22 Nov) and W4 (23–29 Nov) fully open. Final prizes: iPhone Duo /
+Mac Mini / Switch 2 (shipping to Indonesia not guaranteed — equivalent
+compensation promised by Qodo).

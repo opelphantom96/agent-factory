@@ -1,0 +1,19 @@
+{
+  "acceptance": [
+    "Sector times (3 sectors) are shown for current and reference laps",
+    "Full-lap delta is shown",
+    "Reference lap differs from the current lap",
+    "Tests pass (npm test)"
+  ],
+  "change": "tickets/changes/t-002-lap-compare.mjs",
+  "files": [
+    "src/demo/features.js"
+  ],
+  "goal": "Let the driver compare the current lap against a reference lap, sector by sector.",
+  "id": "T-002",
+  "status": "done",
+  "tests": [
+    "src/demo/lap-compare.test.js"
+  ],
+  "title": "Add lap-time comparison table (current vs reference lap)"
+}

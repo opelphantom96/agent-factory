@@ -1,0 +1,19 @@
+{
+  "acceptance": [
+    "At least one DRS zone is detected on the lap",
+    "Zones are shaded on the speed chart and labelled DRS",
+    "The dashboard lists each zone with start/end distances",
+    "Tests pass (npm test)"
+  ],
+  "change": "tickets/changes/t-001-drs-zones.mjs",
+  "files": [
+    "src/demo/features.js"
+  ],
+  "goal": "Make the fastest parts of the lap visible: shade DRS zones on the speed chart and list them.",
+  "id": "T-001",
+  "status": "done",
+  "tests": [
+    "src/demo/drs.test.js"
+  ],
+  "title": "Add DRS zones overlay to the F1 telemetry chart"
+}

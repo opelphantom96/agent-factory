@@ -1,0 +1,64 @@
+{
+  "ticket": "T-003",
+  "startedAt": "2026-11-14T11:20:40.271Z",
+  "qodo": {
+    "available": false,
+    "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+  },
+  "stages": {
+    "spec": {
+      "ok": true,
+      "errors": [],
+      "title": "Add a colour legend to the dashboard"
+    },
+    "planReview": {
+      "ok": true,
+      "rulesChecked": 5,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "plan-ok",
+          "message": "plan satisfies AGENTS.md rules (5 steps)"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "implement": {
+      "ok": true,
+      "changeScript": "tickets/changes/t-003-legend.mjs",
+      "changedFiles": [
+        "src/demo/features.js",
+        "src/demo/legend.test.js"
+      ],
+      "output": "added legend feature to src/demo/features.js\nadded src/demo/legend.test.js\n"
+    },
+    "codeReview": {
+      "ok": true,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "diff-ok",
+          "message": "2 file(s) changed, no blocking findings"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "autoFix": {
+      "fixed": [],
+      "remaining": []
+    },
+    "verify": {
+      "ok": true,
+      "output": "[verify] syntax src/demo/drs.test.js: OK\n[verify] syntax src/demo/features.js: OK\n[verify] syntax src/demo/lap-compare.test.js: OK\n[verify] syntax src/demo/legend.test.js: OK\n[verify] syntax src/demo/render.js: OK\n[verify] syntax src/demo/telemetry.js: OK\n[verify] syntax src/demo/telemetry.test.js: OK\n[verify] syntax src/factory/evidence.js: OK\n[verify] syntax src/factory/fixer.js: OK\n[verify] syntax src/factory/index.js: OK\n[verify] syntax src/factory/qodo.js: OK\n[verify] syntax src/factory/review.js: OK\n[verify] syntax src/factory/tickets.js: OK\n[verify] syntax scripts/automation.mjs: OK\n[verify] syntax scripts/mine-rules.mjs: OK\n[verify] syntax scripts/verify.mjs: OK\n✔ DRS zones are detected on the fast straights (8.327621ms)\n✔ drs-zones feature renders bands and a section (3.672498ms)\n✔ sector times add up to (almost) the lap time (6.987021ms)\n✔ lap-compare feature renders a table with deltas (9.107692ms)\n✔ legend feature renders all four entries (12.856204ms)\n✔ lap has one sample every 10 m over 5,412 m (12.441913ms)\n✔ same seed produces the same lap (deterministic) (5.145488ms)\n✔ different seeds produce different laps (2.599609ms)\n✔ speed stays in a plausible F1 range and gears match speed (2.149034ms)\n✔ lap stats are sane (1.344357ms)\n✔ dashboard HTML contains all three charts and the stats (4.347471ms)\nℹ tests 11\nℹ suites 0\nℹ pass 11\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 462.361288\n[verify] tests: OK\ndashboard written: /home/hatch/workspace/qodo-hackathon/agent-factory/apps/f1-telemetry/index.html\n[verify] demo rebuild: OK\n"
+    }
+  },
+  "verdict": "APPROVED",
+  "demoArtifact": "apps/f1-telemetry/index.html",
+  "finishedAt": "2026-11-14T11:20:42.637Z"
+}

@@ -1,0 +1,17 @@
+{
+  "acceptance": [
+    "Top-speed point is marked on the speed chart with its value",
+    "Tests pass (npm test)"
+  ],
+  "change": "tickets/changes/t-004-topspeed.mjs",
+  "files": [
+    "src/demo/features.js"
+  ],
+  "goal": "Mark the fastest point of the lap on the speed chart. NOTE: this ticket intentionally ships without a test file — it exists to exercise the factory's PR Resolver (auto-fix) stage, which must generate the missing smoke test and re-verify.",
+  "id": "T-004",
+  "status": "done",
+  "tests": [
+    "src/demo/topspeed.test.js"
+  ],
+  "title": "Add top-speed marker to the speed chart"
+}
