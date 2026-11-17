@@ -1,0 +1,62 @@
+{
+  "challenge": "Day 11: make the reviewer yours",
+  "email": "Filip Hric at Qodo <filip.h@qodo.ai>, 16 Nov 2026 19:04 WIB (Gmail id 1a1e43e3074e71e3)",
+  "sampleChange": "Fixed controlled PR (temp dir, same code for both runs): src/demo/remote-data.js (fetch from network URL + console.log), src/demo/local-data.js (fetch ./data.json), src/factory/notes.js (console.log in CLI layer), src/demo/remote-data.test.js",
+  "originalReview": {
+    "profile": "default",
+    "findings": [
+      {
+        "severity": "blocker",
+        "type": "external-url",
+        "message": "hardcoded external URL in the change (src/demo/remote-data.js)",
+        "file": "src/demo/remote-data.js"
+      }
+    ]
+  },
+  "customizedReview": {
+    "profile": "custom",
+    "config": "review/review-config.json",
+    "findings": [
+      {
+        "severity": "blocker",
+        "type": "network-access",
+        "message": "demo must work offline from file:// — load from local data instead of a network URL (src/demo/remote-data.js)",
+        "file": "src/demo/remote-data.js"
+      },
+      {
+        "severity": "warning",
+        "type": "console-log-demo",
+        "message": "console.log in demo code — keep the dashboard output clean (src/demo/remote-data.js)",
+        "file": "src/demo/remote-data.js"
+      },
+      {
+        "severity": "info",
+        "type": "local-data-load",
+        "message": "local data load — offline-safe (src/demo/local-data.js)",
+        "file": "src/demo/local-data.js"
+      },
+      {
+        "severity": "info",
+        "type": "console-log-factory",
+        "message": "console.log in factory CLI layer is intentional operator logging — not flagged (src/factory/notes.js)",
+        "file": "src/factory/notes.js"
+      }
+    ]
+  },
+  "comparison": {
+    "feedbackChanged": true,
+    "displayChanged": false,
+    "whatChanged": [
+      "Generic external-url blocker replaced by product-specific network-access blocker (demo must work offline from file://, load from local data instead).",
+      "New warning: console.log in demo code (clean-dashboard-output decision).",
+      "New info: local fetch of ./data.json is offline-safe (offline-first decision).",
+      "New info: console.log in factory CLI layer is intentional logging, explicitly not flagged (factory-logging decision)."
+    ],
+    "anythingElseChangedBetweenRuns": "Nothing — same temp dir, same files, same ticket; only the review profile changed.",
+    "stillUnhelpfulOrLost": "Nothing lost: the custom run keeps every generic check except external-url, which it replaces with the more specific network-access finding.",
+    "concreteExampleChecked": "remote-data.js fetches https://api.example.com/laps — default says only \"hardcoded external URL\"; custom says it breaks the offline-first demo and points at local data instead."
+  },
+  "decision": "KEEP the custom setup — it is now the factory default review profile (src/factory/index.js).",
+  "honesty": "Local reviewer stand-in, not a real Qodo review: Qodo CLI unavailable (no Qodo account yet). A real Qodo before/after comparison on a GitHub PR is pending the user connecting Qodo.",
+  "generatedAt": "2026-11-17T01:29:24.256Z"
+}

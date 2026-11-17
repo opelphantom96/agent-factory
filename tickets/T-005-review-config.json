@@ -1,0 +1,18 @@
+{
+  "acceptance": [
+    "review/review-config.json exists with the 4 product decisions",
+    "Tests pass (npm test)",
+    "Day 11 before/after review comparison recorded in evidence"
+  ],
+  "change": "tickets/changes/t-005-review-config.mjs",
+  "files": [
+    "review/review-config.json"
+  ],
+  "goal": "Save the Day 11 customized review setup as review/review-config.json: the product decisions review must respect (offline-first demo, zero runtime deps, intentional factory logging, clean dashboard output), so the factory reviews with product context instead of generic rules.",
+  "id": "T-005",
+  "status": "done",
+  "tests": [
+    "src/factory/review-config.test.js"
+  ],
+  "title": "Day 11: customize the reviewer (review setup)"
+}

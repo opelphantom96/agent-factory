@@ -115,7 +115,9 @@ export function runTicket(ticketId) {
   if (changes.length === 0) blockers.push({ severity: 'blocker', type: 'no-change', message: 'change script changed no files' });
 
   // ── 4. code review ───────────────────────────────────────────────────
-  let reviewFindings = reviewDiff(ROOT, changes, ticket);
+  // Day 11 decision (KEEP): the factory reviews with the customized
+  // profile (review/review-config.json) by default.
+  let reviewFindings = reviewDiff(ROOT, changes, ticket, { profile: 'custom' });
   const qodoDiff = qodoReview({ scope: 'diff', target: changes[0] ? join(ROOT, changes[0].file) : ticket._file });
   if (qodoDiff.available) reviewFindings = [...reviewFindings, ...qodoDiff.findings];
   let reviewBlockers = reviewFindings.filter((f) => f.severity === 'blocker');
@@ -135,7 +137,7 @@ export function runTicket(ticketId) {
       // Re-review after fixes.
       const afterFix = snapshotFiles(ROOT, watched);
       const changesAfterFix = diffSnapshots(before, afterFix);
-      reviewFindings = reviewDiff(ROOT, changesAfterFix, ticket);
+      reviewFindings = reviewDiff(ROOT, changesAfterFix, ticket, { profile: 'custom' });
       reviewBlockers = reviewFindings.filter((f) => f.severity === 'blocker');
       record.stages.codeReview.afterFix = { findings: reviewFindings };
     }

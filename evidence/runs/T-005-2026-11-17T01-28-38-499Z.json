@@ -1,0 +1,63 @@
+{
+  "ticket": "T-005",
+  "startedAt": "2026-11-17T01:28:34.511Z",
+  "qodo": {
+    "available": false,
+    "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+  },
+  "stages": {
+    "spec": {
+      "ok": true,
+      "errors": [],
+      "title": "Day 11: customize the reviewer (review setup)"
+    },
+    "planReview": {
+      "ok": true,
+      "rulesChecked": 5,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "plan-ok",
+          "message": "plan satisfies AGENTS.md rules (5 steps)"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "implement": {
+      "ok": true,
+      "changeScript": "tickets/changes/t-005-review-config.mjs",
+      "changedFiles": [
+        "review/review-config.json"
+      ],
+      "output": "wrote review/review-config.json (Day 11 custom review setup)\n"
+    },
+    "codeReview": {
+      "ok": true,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "diff-ok",
+          "message": "1 file(s) changed, no blocking findings"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "autoFix": {
+      "fixed": [],
+      "remaining": []
+    },
+    "verify": {
+      "ok": true,
+      "output": "[verify] syntax src/demo/drs.test.js: OK\n[verify] syntax src/demo/features.js: OK\n[verify] syntax src/demo/lap-compare.test.js: OK\n[verify] syntax src/demo/legend.test.js: OK\n[verify] syntax src/demo/render.js: OK\n[verify] syntax src/demo/telemetry.js: OK\n[verify] syntax src/demo/telemetry.test.js: OK\n[verify] syntax src/demo/topspeed.test.js: OK\n[verify] syntax src/factory/evidence.js: OK\n[verify] syntax src/factory/fixer.js: OK\n[verify] syntax src/factory/index.js: OK\n[verify] syntax src/factory/qodo.js: OK\n[verify] syntax src/factory/review-config.test.js: OK\n[verify] syntax src/factory/review.js: OK\n[verify] syntax src/factory/tickets.js: OK\n[verify] syntax scripts/automation.mjs: OK\n[verify] syntax scripts/mine-rules.mjs: OK\n[verify] syntax scripts/verify.mjs: OK\n✔ DRS zones are detected on the fast straights (9.31858ms)\n✔ drs-zones feature renders bands and a section (2.622618ms)\n✔ sector times add up to (almost) the lap time (10.326484ms)\n✔ lap-compare feature renders a table with deltas (12.240727ms)\n✔ legend feature renders all four entries (8.37256ms)\n✔ lap has one sample every 10 m over 5,412 m (8.270546ms)\n✔ same seed produces the same lap (deterministic) (10.589698ms)\n✔ different seeds produce different laps (7.365067ms)\n✔ speed stays in a plausible F1 range and gears match speed (6.794991ms)\n✔ lap stats are sane (0.807102ms)\n✔ dashboard HTML contains all three charts and the stats (5.72846ms)\n✔ smoke: features.js loads and exports (3.122758ms)\n✔ loadReviewConfig: reads the Day 11 setup from the repo (3.807997ms)\n✔ loadReviewConfig: null when no config file exists (0.717657ms)\n✔ default profile: generic external-url blocker, nothing product-specific (387.12372ms)\n✔ custom profile: product-specific network blocker, demo warning, explicit allows (310.729777ms)\n✔ custom profile: same code, different feedback — not a different display (615.602652ms)\nℹ tests 17\nℹ suites 0\nℹ pass 17\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1990.931204\n[verify] tests: OK\ndashboard written: /home/hatch/workspace/qodo-hackathon/agent-factory/apps/f1-telemetry/index.html\n[verify] demo rebuild: OK\n"
+    }
+  },
+  "verdict": "APPROVED",
+  "demoArtifact": "apps/f1-telemetry/index.html",
+  "finishedAt": "2026-11-17T01:28:38.499Z"
+}

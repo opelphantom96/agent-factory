@@ -5,8 +5,9 @@
 pushed — needs the user's GitHub account).
 **Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
 "You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
-**Status at last update:** 14 Nov 2026 ~18:25 WIB. 12/12 tests pass,
-`npm run verify` green, 4/4 factory tickets APPROVED.
+**Status at last update:** 17 Nov 2026 ~08:30 WIB. 17/17 tests pass,
+`npm run verify` green, 5/5 factory tickets APPROVED. Day 11 challenge
+email arrived 16 Nov 19:04 WIB and is done locally (see Week 3 below).
 
 ## How to read this log
 
@@ -47,16 +48,25 @@ pushed — needs the user's GitHub account).
 | T-002 | Lap comparison table (3 sectors + full lap vs reference lap) | `evidence/runs/T-002-2026-11-14T11-20-40-188Z.json` |
 | T-003 | Colour legend | `evidence/runs/T-003-2026-11-14T11-20-42-638Z.json` |
 | T-004 | Top-speed marker (PR Resolver demo — see Day 7) | `evidence/runs/T-004-2026-11-14T11-21-06-213Z.json` |
+| T-005 | Day 11 custom review setup (`review/review-config.json`) | `evidence/runs/T-005-2026-11-17T01-28-38-499Z.json` |
+
+## Week 3 — Connect tools, agents and code review
+
+| Day | Challenge | Evidence |
+|---|---|---|
+| Day 11 (16 Nov) | **Make the reviewer yours** (email 16 Nov 19:04 WIB, Gmail id `1a1e43e3074e71e3`) | ✅ Custom setup: `review/review-config.json` — 4 product decisions (offline-first demo, zero runtime deps, intentional factory logging, clean dashboard output). Factory reviews with the custom profile by default (`src/factory/index.js`, ticket T-005 APPROVED). Before/after on the SAME sample change: `evidence/runs/day-11-review-comparison.json` — original review: 1 finding (generic `external-url` blocker); customized review: 4 findings (`network-access` blocker with offline guidance, `console-log-demo` warning, `local-data-load` + `console-log-factory` infos). Feedback changed, display unchanged. Decision: **KEEP**. Tests: `src/factory/review-config.test.js` (5 tests). Real Qodo review comparison: ⏳ pending Qodo account (local reviewer is the stand-in, labelled as such). Submit to GitHub Discussion #13: ⏳ needs the user's GitHub account. |
+| Day 12–15 (17–20 Nov) | Exact daily instructions arrive by email. | ⏳ Day 12 email not yet in Gmail at the 17 Nov 08:17 check. |
 
 Final dashboard: `apps/f1-telemetry/index.html` — verified to contain DRS
-zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **12/12
+zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **17/17
 pass** (`npm test`).
 
 ## Week 3–4 + finale (16 Nov – 2 Dec)
 
-⏳ Not started — exact daily instructions arrive by email starting **Mon
-16 Nov**. The factory already implements the W4 theme (verify →
-approve/escalate) end-to-end; W3/W4 work starts when the emails land.
+⏳ Week 3 started: Day 11 done locally (see above). Days 12–15 arrive by
+email, one per weekday. The factory already implements the W4 theme
+(verify → approve/escalate) end-to-end; W4 will harden them per the daily
+instructions.
 
 ## Still needs the user
 
@@ -67,10 +77,12 @@ approve/escalate) end-to-end; W3/W4 work starts when the emails land.
 2. **GitHub account + repo** — create the repo (public, MIT) and push this
    local git repo (`git remote add origin … && git push`). The final
    submission needs a repo link.
-3. **Daily email Mon 16 Nov** — contains the Week 3 challenge instructions
-   and the GitHub Discussion links for submitting each challenge + the final
-   project. Forward/share it when it arrives (or check Gmail — the mailbox
-   is connected).
+3. **Daily email (next: Day 12, Tue 17 Nov)** — Day 11 arrived 16 Nov
+   19:04 WIB and is done locally (see Week 3). Day 12 had not arrived at
+   the 17 Nov 08:17 Gmail check; it usually lands in the evening WIB.
+   Each email carries the next challenge instructions and the GitHub
+   Discussion link for submitting it. The mailbox is checked daily
+   ~08:17 WIB.
 4. **Final submission** — repo link + short write-up via the GitHub
    Discussion link from the daily email, before **3 Dec 2026 15:00 WIB**.
 

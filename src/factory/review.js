@@ -65,17 +65,91 @@ export function reviewPlan(root, ticket, plan) {
 }
 
 /**
+ * Review configuration (Day 11 challenge: "make the reviewer yours").
+ *
+ * The customized setup lives in `review/review-config.json`: the product
+ * decisions the reviewer must respect, what it should catch, and what it
+ * must not flag. `loadReviewConfig` reads it; when the file is absent the
+ * custom profile falls back to the decisions documented in that file, so a
+ * run never silently reverts to the generic reviewer.
+ */
+export function loadReviewConfig(root) {
+  const p = join(root, 'review', 'review-config.json');
+  if (!existsSync(p)) return null;
+  try {
+    return JSON.parse(readFileSync(p, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+const NETWORK_PATTERNS = [/\bfetch\s*\(/, /\bXMLHttpRequest\b/, /\bnew\s+WebSocket\s*\(/];
+const EXTERNAL_URL = /https?:\/\/(?!localhost|127\.0\.0\.1)/;
+
+/**
+ * Custom-profile findings: the Day 11 setup. Same changed files, reviewed
+ * against the product decisions in review/review-config.json instead of
+ * the generic rules.
+ */
+function reviewWithCustomProfile(changes) {
+  const findings = [];
+  for (const { file, after } of changes) {
+    if (after === null) continue;
+    if (file.startsWith('src/demo/')) {
+      if (NETWORK_PATTERNS.some((p) => p.test(after))) {
+        if (EXTERNAL_URL.test(after)) {
+          findings.push({
+            severity: 'blocker', type: 'network-access',
+            message: `demo must work offline from file:// — load from local data instead of a network URL (${file})`,
+            file,
+          });
+        } else {
+          findings.push({
+            severity: 'info', type: 'local-data-load',
+            message: `local data load — offline-safe (${file})`, file,
+          });
+        }
+      }
+      if (/console\.log\s*\(/.test(after)) {
+        findings.push({
+          severity: 'warning', type: 'console-log-demo',
+          message: `console.log in demo code — keep the dashboard output clean (${file})`,
+          file,
+        });
+      }
+    }
+    if (file.startsWith('src/factory/') && /console\.log\s*\(/.test(after)) {
+      findings.push({
+        severity: 'info', type: 'console-log-factory',
+        message: `console.log in factory CLI layer is intentional operator logging — not flagged (${file})`,
+        file,
+      });
+    }
+  }
+  return findings;
+}
+
+/**
  * Review a code diff (changed files, before/after contents).
  * @param {string} root
  * @param {Array<{file: string, before: string|null, after: string|null}>} changes
  * @param {object} ticket
+ * @param {{ profile?: 'default'|'custom' }} opts — 'custom' applies the
+ *   Day 11 review setup (review/review-config.json); 'default' is the
+ *   generic reviewer. The custom profile replaces the generic
+ *   `external-url` finding with the product-specific `network-access`
+ *   finding; all other generic checks still apply.
  * @returns {Array<{severity, type, message, file?}>}
  */
-export function reviewDiff(root, changes, ticket) {
+export function reviewDiff(root, changes, ticket, opts = {}) {
+  const profile = opts.profile === 'custom' ? 'custom' : 'default';
   const findings = [];
+  const forbidden = profile === 'custom'
+    ? FORBIDDEN_IN_DIFF.filter((f) => f.type !== 'external-url')
+    : FORBIDDEN_IN_DIFF;
   for (const { file, after } of changes) {
     if (after === null) continue; // deleted file — allowed only if the ticket says so
-    for (const { pattern, type, message } of FORBIDDEN_IN_DIFF) {
+    for (const { pattern, type, message } of forbidden) {
       if (pattern.test(after)) {
         findings.push({ severity: 'blocker', type, message: `${message} (${file})`, file });
       }
@@ -106,6 +180,9 @@ export function reviewDiff(root, changes, ticket) {
         file: changedSrc[0],
       });
     }
+  }
+  if (profile === 'custom') {
+    findings.push(...reviewWithCustomProfile(changes));
   }
   if (findings.length === 0) {
     findings.push({ severity: 'info', type: 'diff-ok', message: `${changes.length} file(s) changed, no blocking findings` });
