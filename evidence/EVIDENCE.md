@@ -5,10 +5,12 @@
 to https://github.com/opelphantom96/agent-factory, branch master).
 **Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
 "You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
-**Status at last update:** 17 Nov 2026 ~20:10 WIB. 19/19 tests pass,
+**Status at last update:** 17 Nov 2026 ~20:20 WIB. 19/19 tests pass,
 `npm run verify` green, 5/5 factory tickets APPROVED. Day 11 challenge
 email arrived 16 Nov 19:04 WIB; the REAL Qodo before/after comparison is
-done (see Week 3 below). Qodo account signed in, repo connected to Qodo.
+done (see Week 3 below). Day 12 challenge email arrived 17 Nov 19:23 WIB;
+the ticket-source check is done with a MIXED result (see Week 3 below).
+Qodo account signed in, repo connected to Qodo.
 
 ## How to read this log
 
@@ -55,8 +57,9 @@ done (see Week 3 below). Qodo account signed in, repo connected to Qodo.
 
 | Day | Challenge | Evidence |
 |---|---|---|
-| Day 11 (16 Nov) | **Make the reviewer yours** (email 16 Nov 19:04 WIB, Gmail id `1a1e43e3074e71e3`) | ✅ Custom setup: `review/review-config.json` — 4 product decisions (offline-first demo, zero runtime deps, intentional factory logging, clean dashboard output). Factory reviews with the custom profile by default (`src/factory/index.js`, ticket T-005 APPROVED). Local stand-in before/after on the SAME sample change: `evidence/runs/day-11-review-comparison.json` — original review: 1 finding (generic `external-url` blocker); customized review: 4 findings (`network-access` blocker with offline guidance, `console-log-demo` warning, `local-data-load` + `console-log-factory` infos). Feedback changed, display unchanged. **REAL Qodo comparison — DONE 17 Nov ~20:00 WIB on PR #1 (https://github.com/opelphantom96/agent-factory/pull/1, branch `day-11-real-comparison`, commit `744d419`, still open/unmerged): `evidence/runs/day-11-real-comparison.json` — default setup: 3 bug findings; custom setup (portal Custom instructions + `/agentic_review`): 4 bugs — same 3 unchanged + NEW "Demo timing loads print to the console" (Medium, rule 4 CLEAN DASHBOARD worked), nothing lost, factory `console.log` still unflagged (rule 3 held). Attribution caveat recorded honestly: the new finding cannot be proven to come from the portal instructions alone (repo config was also cited as evidence). Decision: **KEEP with ONE ADJUSTMENT to rule 1** — a relative local fetch is not a network violation, but fetch() from file:// is still a real limitation; say so and suggest inlining (applied in `review/review-config.json`, `.pr_agent.toml`, and the local reviewer). Setup now durable in the repo as `.pr_agent.toml` (PR-Agent reads repo config from the default branch). Tests: `src/factory/review-config.test.js` (7 tests). Discussion submission: ✅ SUBMITTED 17 Nov 18:30 WIB as opelphantom96 — comment https://github.com/orgs/qodo-hackathon/discussions/13#discussioncomment-19678255; real-comparison follow-up comment ⏳ to post. |
-| Day 12–15 (17–20 Nov) | Exact daily instructions arrive by email. | ⏳ Day 12 email not yet in Gmail at the 17 Nov 08:17 check. |
+| Day 11 (16 Nov) | **Make the reviewer yours** (email 16 Nov 19:04 WIB, Gmail id `1a1e43e3074e71e3`) | ✅ Custom setup: `review/review-config.json` — 4 product decisions (offline-first demo, zero runtime deps, intentional factory logging, clean dashboard output). Factory reviews with the custom profile by default (`src/factory/index.js`, ticket T-005 APPROVED). Local stand-in before/after on the SAME sample change: `evidence/runs/day-11-review-comparison.json` — original review: 1 finding (generic `external-url` blocker); customized review: 4 findings (`network-access` blocker with offline guidance, `console-log-demo` warning, `local-data-load` + `console-log-factory` infos). Feedback changed, display unchanged. **REAL Qodo comparison — DONE 17 Nov ~20:00 WIB on PR #1 (https://github.com/opelphantom96/agent-factory/pull/1, branch `day-11-real-comparison`, commit `744d419`, still open/unmerged): `evidence/runs/day-11-real-comparison.json` — default setup: 3 bug findings; custom setup (portal Custom instructions + `/agentic_review`): 4 bugs — same 3 unchanged + NEW "Demo timing loads print to the console" (Medium, rule 4 CLEAN DASHBOARD worked), nothing lost, factory `console.log` still unflagged (rule 3 held). Attribution caveat recorded honestly: the new finding cannot be proven to come from the portal instructions alone (repo config was also cited as evidence). Decision: **KEEP with ONE ADJUSTMENT to rule 1** — a relative local fetch is not a network violation, but fetch() from file:// is still a real limitation; say so and suggest inlining (applied in `review/review-config.json`, `.pr_agent.toml`, and the local reviewer). Setup now durable in the repo as `.pr_agent.toml` (PR-Agent reads repo config from the default branch). Tests: `src/factory/review-config.test.js` (7 tests). Discussion submission: ✅ SUBMITTED 17 Nov 18:30 WIB as opelphantom96 — comment https://github.com/orgs/qodo-hackathon/discussions/13#discussioncomment-19678255; real-comparison follow-up comment ✅ POSTED 17 Nov 20:11 WIB — https://github.com/orgs/qodo-hackathon/discussions/13#discussioncomment-19680610. |
+| Day 12 (17 Nov) | **Give your factory the full picture** (email 17 Nov 19:23 WIB, Gmail id `1a1e975ea67a7447`) | ✅ DONE 17 Nov ~20:16 WIB — MIXED result, recorded honestly in `evidence/runs/day-12-ticket-source-check.json`. Requirement: offline-first (from ticket T-005 + `review/review-config.json`). Source given to Qodo: GitHub Issue #2 (https://github.com/opelphantom96/agent-factory/issues/2, created 17 Nov 20:14 WIB as opelphantom96), referenced in the PR #1 description (https://github.com/opelphantom96/agent-factory/pull/1, code unchanged, commit `744d419`). My own verification first (code inspection + Node behavior check with fetch mocked to throw): `loadLiveTiming()` rejects with no offline path (violates); relative local fetch satisfies the letter but `fetch()` itself fails from file://; the test never calls the loader; factory `console.log` is allowed. Qodo re-review (`/agentic_review` 20:15 WIB, updated ~20:16 WIB): **context level — YES**: Context sources lists "✅ Tickets: 🎫 Day 12: demo must work offline from file:// — no network access in demo code" linking to Issue #2, and a new "📎 Requirement gaps (0)" header appeared. **Finding level — NO**: the 4 findings are IDENTICAL to the Day 11 custom review (no new finding, no new inline comment); NONE cites Issue #2 or mentions "T-005". Finding 1 still flags the network fetch (Action required) but cites `review-config.json` + the prep record, not the Issue. Expectations only partly met (network fetch flagged as a blocker but without the Issue citation; relative local fetch not flagged as a network problem — finding 3 frames it as a file:// limitation, consistent with adjusted rule 1). Process change: check "Context sources / Tickets" for source access; do not assume findings cite a linked ticket just because it is listed; keep requirements in the repo config, because that is what findings actually cite. Submission: ⏳ draft prepared, to post via the Discussion link from the Day 12 email. |
+| Day 13–15 (18–20 Nov) | Exact daily instructions arrive by email. | ⏳ Not started. Day 13 email expected 18 Nov (evening WIB). |
 
 Final dashboard: `apps/f1-telemetry/index.html` — verified to contain DRS
 zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **19/19
@@ -64,8 +67,9 @@ pass** (`npm test`).
 
 ## Week 3–4 + finale (16 Nov – 2 Dec)
 
-⏳ Week 3 started: Day 11 done for real (see above). Days 12–15 arrive by
-email, one per weekday. The factory already implements the W4 theme
+⏳ Week 3 started: Day 11 done for real (see above). Day 12 done — MIXED
+ticket-source result (see above). Days 13–15 arrive by email, one per
+weekday. The factory already implements the W4 theme
 (verify → approve/escalate) end-to-end; W4 will harden them per the daily
 instructions.
 
@@ -77,11 +81,13 @@ instructions.
    This unlocked real Qodo reviews on PR #1.
 2. **GitHub account + repo** — ✅ DONE 17 Nov: repo
    https://github.com/opelphantom96/agent-factory (public) created and
-   pushed (master at b6ad509, PR #1 open for the Day 11 comparison).
+   pushed (master at 5609afa, PR #1 open for the Day 11 comparison,
+   Issue #2 open for the Day 12 ticket-source check).
    The final submission needs a repo link — this is it.
-3. **Daily email (next: Day 12, Tue 17 Nov)** — Day 11 arrived 16 Nov
-   19:04 WIB and is done locally (see Week 3). Day 12 had not arrived at
-   the 17 Nov 08:17 Gmail check; it usually lands in the evening WIB.
+3. **Daily email (next: Day 13, Wed 18 Nov)** — Day 11 arrived 16 Nov
+   19:04 WIB and is done for real (see Week 3). Day 12 arrived 17 Nov
+   19:23 WIB and is done — MIXED ticket-source result (see Week 3).
+   Day 13 is expected 18 Nov (evening WIB).
    Each email carries the next challenge instructions and the GitHub
    Discussion link for submitting it. The mailbox is checked daily
    ~08:17 WIB.
