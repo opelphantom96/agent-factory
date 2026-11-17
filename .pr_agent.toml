@@ -1,0 +1,40 @@
+# Qodo Merge (PR-Agent) review configuration for Agent Factory.
+# NOTE: PR-Agent reads repo config from the DEFAULT branch, so this file
+# lives on master. It mirrors the Day 11 custom setup
+# (review/review-config.json + Qodo portal Custom instructions) so the
+# product decisions survive outside the portal.
+# Challenge: Day 11 "make the reviewer yours" — decision: KEEP the custom
+# setup, with rule 1 adjusted after the real Qodo before/after comparison
+# on PR #1 (evidence/runs/day-11-real-comparison.json).
+
+[review_agent]
+issues_user_guidelines = """
+Product context for reviewing this repo — the F1 telemetry demo is a
+static dashboard opened from disk (file://) and must work fully offline;
+the factory and the demo have zero runtime dependencies; console.log in
+the factory CLI layer is intentional operator logging; demo dashboard
+output must stay clean for the end user.
+
+1. OFFLINE-FIRST DEMO. Flag any network access in demo code as a blocker
+   and suggest loading from local data instead. A relative fetch of local
+   data (e.g. fetch('./data.json')) is NOT a network violation — do not
+   flag it as one. But fetch() is blocked when the demo is opened from
+   file:// (local files are opaque origins), so that is still a real
+   limitation: say so and suggest inlining the data into the JS file or
+   index.html.
+2. ZERO RUNTIME DEPS. Flag any new dependency or package install as a
+   blocker unless the ticket notes it. Never suggest adding a library
+   as a fix.
+3. FACTORY LOGGING. console.log under src/factory is intentional
+   operator logging. Treat it as allowed and say so explicitly; do not
+   flag factory CLI logging as noise.
+4. CLEAN DASHBOARD OUTPUT. Warn on console.log in demo code (src/demo):
+   diagnostic output must not reach the end user's console.
+"""
+
+compliance_user_guidelines = """
+Zero runtime dependencies: the factory and the demo must run on plain
+Node with no install step. Flag any new dependency, package install, or
+require()/import of an external package as a blocker unless the ticket
+explicitly notes it.
+"""

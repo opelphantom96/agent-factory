@@ -1,13 +1,14 @@
 # Evidence Log — Qodo Hackathon 2026
 
 **Project:** Agent Factory (autonomous pipeline) + F1 telemetry demo app.
-**Repo:** `~/workspace/qodo-hackathon/agent-factory/` (local git repo; not yet
-pushed — needs the user's GitHub account).
+**Repo:** `~/workspace/qodo-hackathon/agent-factory/` (local git repo; pushed
+to https://github.com/opelphantom96/agent-factory, branch master).
 **Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
 "You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
-**Status at last update:** 17 Nov 2026 ~08:30 WIB. 17/17 tests pass,
+**Status at last update:** 17 Nov 2026 ~20:10 WIB. 19/19 tests pass,
 `npm run verify` green, 5/5 factory tickets APPROVED. Day 11 challenge
-email arrived 16 Nov 19:04 WIB and is done locally (see Week 3 below).
+email arrived 16 Nov 19:04 WIB; the REAL Qodo before/after comparison is
+done (see Week 3 below). Qodo account signed in, repo connected to Qodo.
 
 ## How to read this log
 
@@ -54,29 +55,30 @@ email arrived 16 Nov 19:04 WIB and is done locally (see Week 3 below).
 
 | Day | Challenge | Evidence |
 |---|---|---|
-| Day 11 (16 Nov) | **Make the reviewer yours** (email 16 Nov 19:04 WIB, Gmail id `1a1e43e3074e71e3`) | ✅ Custom setup: `review/review-config.json` — 4 product decisions (offline-first demo, zero runtime deps, intentional factory logging, clean dashboard output). Factory reviews with the custom profile by default (`src/factory/index.js`, ticket T-005 APPROVED). Before/after on the SAME sample change: `evidence/runs/day-11-review-comparison.json` — original review: 1 finding (generic `external-url` blocker); customized review: 4 findings (`network-access` blocker with offline guidance, `console-log-demo` warning, `local-data-load` + `console-log-factory` infos). Feedback changed, display unchanged. Decision: **KEEP**. Tests: `src/factory/review-config.test.js` (5 tests). Real Qodo review comparison: ⏳ pending Qodo account (local reviewer is the stand-in, labelled as such). Submit to GitHub Discussion #13: ⏳ needs the user's GitHub account. |
+| Day 11 (16 Nov) | **Make the reviewer yours** (email 16 Nov 19:04 WIB, Gmail id `1a1e43e3074e71e3`) | ✅ Custom setup: `review/review-config.json` — 4 product decisions (offline-first demo, zero runtime deps, intentional factory logging, clean dashboard output). Factory reviews with the custom profile by default (`src/factory/index.js`, ticket T-005 APPROVED). Local stand-in before/after on the SAME sample change: `evidence/runs/day-11-review-comparison.json` — original review: 1 finding (generic `external-url` blocker); customized review: 4 findings (`network-access` blocker with offline guidance, `console-log-demo` warning, `local-data-load` + `console-log-factory` infos). Feedback changed, display unchanged. **REAL Qodo comparison — DONE 17 Nov ~20:00 WIB on PR #1 (https://github.com/opelphantom96/agent-factory/pull/1, branch `day-11-real-comparison`, commit `744d419`, still open/unmerged): `evidence/runs/day-11-real-comparison.json` — default setup: 3 bug findings; custom setup (portal Custom instructions + `/agentic_review`): 4 bugs — same 3 unchanged + NEW "Demo timing loads print to the console" (Medium, rule 4 CLEAN DASHBOARD worked), nothing lost, factory `console.log` still unflagged (rule 3 held). Attribution caveat recorded honestly: the new finding cannot be proven to come from the portal instructions alone (repo config was also cited as evidence). Decision: **KEEP with ONE ADJUSTMENT to rule 1** — a relative local fetch is not a network violation, but fetch() from file:// is still a real limitation; say so and suggest inlining (applied in `review/review-config.json`, `.pr_agent.toml`, and the local reviewer). Setup now durable in the repo as `.pr_agent.toml` (PR-Agent reads repo config from the default branch). Tests: `src/factory/review-config.test.js` (7 tests). Discussion submission: ✅ SUBMITTED 17 Nov 18:30 WIB as opelphantom96 — comment https://github.com/orgs/qodo-hackathon/discussions/13#discussioncomment-19678255; real-comparison follow-up comment ⏳ to post. |
 | Day 12–15 (17–20 Nov) | Exact daily instructions arrive by email. | ⏳ Day 12 email not yet in Gmail at the 17 Nov 08:17 check. |
 
 Final dashboard: `apps/f1-telemetry/index.html` — verified to contain DRS
-zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **17/17
+zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **19/19
 pass** (`npm test`).
 
 ## Week 3–4 + finale (16 Nov – 2 Dec)
 
-⏳ Week 3 started: Day 11 done locally (see above). Days 12–15 arrive by
+⏳ Week 3 started: Day 11 done for real (see above). Days 12–15 arrive by
 email, one per weekday. The factory already implements the W4 theme
 (verify → approve/escalate) end-to-end; W4 will harden them per the daily
 instructions.
 
 ## Still needs the user
 
-1. **Qodo product account** — create at qodo.ai (free hackathon license) and
-   sign in to the Qodo CLI. Until then every review record honestly says
-   "qodo: unavailable — local fallback". This unlocks real Qodo reviews,
-   Rule Miner, and Codebase Wisdom.
-2. **GitHub account + repo** — create the repo (public, MIT) and push this
-   local git repo (`git remote add origin … && git push`). The final
-   submission needs a repo link.
+1. **Qodo product account** — ✅ DONE 17 Nov: signed in as
+   andibugil94@gmail.com (TRIAL, 14 days), repo `agent-factory`
+   connected (Qodo Code Review app installed, connection Healthy).
+   This unlocked real Qodo reviews on PR #1.
+2. **GitHub account + repo** — ✅ DONE 17 Nov: repo
+   https://github.com/opelphantom96/agent-factory (public) created and
+   pushed (master at b6ad509, PR #1 open for the Day 11 comparison).
+   The final submission needs a repo link — this is it.
 3. **Daily email (next: Day 12, Tue 17 Nov)** — Day 11 arrived 16 Nov
    19:04 WIB and is done locally (see Week 3). Day 12 had not arrived at
    the 17 Nov 08:17 Gmail check; it usually lands in the evening WIB.

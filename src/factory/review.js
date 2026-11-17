@@ -104,9 +104,13 @@ function reviewWithCustomProfile(changes) {
             file,
           });
         } else {
+          // Adjusted rule 1 (Day 11 real comparison, PR #1): a relative
+          // fetch of local data is NOT a network violation — but fetch()
+          // is blocked when the demo opens from file://, so say that and
+          // suggest inlining the data.
           findings.push({
             severity: 'info', type: 'local-data-load',
-            message: `local data load — offline-safe (${file})`, file,
+            message: `local data load — offline-safe (not a network violation), but fetch() is blocked from file:// — suggest inlining the data (${file})`, file,
           });
         }
       }

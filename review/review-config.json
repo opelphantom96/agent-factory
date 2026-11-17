@@ -7,8 +7,8 @@
     {
       "id": "offline-first",
       "decision": "The F1 telemetry demo is a static dashboard opened from disk (file://) and must work fully offline.",
-      "reviewMust": "Flag any network access in demo code as a blocker and suggest loading from local data instead.",
-      "reviewMustNot": "Do not flag a relative fetch of local data as a problem."
+      "reviewMust": "Flag any network access in demo code as a blocker and suggest loading from local data instead. A relative fetch of local data is not a network violation — but fetch() is blocked when the demo is opened from file://, so say that and suggest inlining the data into the JS file or index.html.",
+      "reviewMustNot": "Do not flag a relative fetch of local data as a network violation."
     },
     {
       "id": "zero-runtime-deps",
@@ -37,5 +37,5 @@
   "ignore": [
     "console.log in src/factory (intentional CLI logging)"
   ],
-  "notes": "Day 11 challenge: pick a real review that missed context, customize the setup, rerun on the same PR and compare. The original (default-profile) review and the customized review of the same sample change are recorded in evidence/runs/day-11-review-comparison.json. The real Qodo review comparison is pending a Qodo account; the local reviewer is the stand-in and is labelled as such. Decision: KEEP the custom setup — it is now the factory default review profile."
+  "notes": "Day 11 challenge: pick a real review that missed context, customize the setup, rerun on the same PR and compare. The original (default-profile) review and the customized review of the same sample change are recorded in evidence/runs/day-11-review-comparison.json (local stand-in). The REAL Qodo before/after comparison on PR #1 is recorded in evidence/runs/day-11-real-comparison.json: default 3 findings → custom 4 findings (+1 demo console.log, nothing lost). Decision: KEEP the custom setup, with rule 1 adjusted — a relative local fetch is not a network violation, but fetch() from file:// is still a real limitation; say so and suggest inlining. The setup is durable in the repo as .pr_agent.toml (PR-Agent reads repo config from the default branch) and stays the factory default review profile."
 }

@@ -4,7 +4,7 @@
 // where the product decisions say they should.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -125,4 +125,45 @@ test('custom profile: same code, different feedback — not a different display'
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('adjusted rule 1: relative local fetch is not a network violation, but file:// blocks fetch()', () => {
+  // Real Qodo comparison on PR #1: the local-fetch finding persisted
+  // because fetch() is blocked from file:// — not because the relative
+  // fetch is a network violation. The reviewer must say both things.
+  const dir = makeSampleRoot();
+  try {
+    const findings = reviewDiff(dir, sampleChanges(dir), TICKET, { profile: 'custom' });
+    const local = findings.find((f) => f.type === 'local-data-load');
+    assert.ok(local, 'relative local fetch still gets the local-data-load info');
+    assert.match(local.message, /offline-safe/);
+    assert.match(local.message, /not a network violation/);
+    assert.match(local.message, /file:\/\//);
+    assert.match(local.message, /inlining/);
+    assert.ok(
+      !findings.some((f) => f.type === 'network-access' && f.file === 'src/demo/local-data.js'),
+      'relative local fetch must not raise a network-access blocker',
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('.pr_agent.toml mirrors the Day 11 custom setup (durable in the repo)', () => {
+  const p = join(ROOT, '.pr_agent.toml');
+  assert.ok(existsSync(p), '.pr_agent.toml should exist at the repo root');
+  const text = readFileSync(p, 'utf8');
+  assert.match(text, /PR-Agent reads repo config from the default branch/i);
+  assert.match(text, /\[review_agent\]/);
+  assert.match(text, /issues_user_guidelines/);
+  assert.match(text, /compliance_user_guidelines/);
+  // Adjusted rule 1 wording must be present in the durable setup.
+  assert.match(text, /NOT a network violation/);
+  assert.match(text, /file:\/\//);
+  assert.match(text, /inlining the data/);
+  // All four product decisions are represented.
+  assert.match(text, /OFFLINE-FIRST DEMO/);
+  assert.match(text, /ZERO RUNTIME DEPS/);
+  assert.match(text, /FACTORY LOGGING/);
+  assert.match(text, /CLEAN DASHBOARD OUTPUT/);
 });
