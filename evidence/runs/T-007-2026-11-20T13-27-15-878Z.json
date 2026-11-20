@@ -1,0 +1,64 @@
+{
+  "ticket": "T-007",
+  "startedAt": "2026-11-20T13:27:09.798Z",
+  "qodo": {
+    "available": false,
+    "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+  },
+  "stages": {
+    "spec": {
+      "ok": true,
+      "errors": [],
+      "title": "Day 14: gate must syntax-check ticket change scripts"
+    },
+    "planReview": {
+      "ok": true,
+      "rulesChecked": 5,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "plan-ok",
+          "message": "plan satisfies AGENTS.md rules (5 steps)"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "implement": {
+      "ok": true,
+      "changeScript": "tickets/changes/t-007-verify-change-scripts.mjs",
+      "changedFiles": [
+        "scripts/verify.mjs",
+        "scripts/verify.test.js"
+      ],
+      "output": "patched scripts/verify.mjs\nwrote scripts/verify.test.js\n"
+    },
+    "codeReview": {
+      "ok": true,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "diff-ok",
+          "message": "2 file(s) changed, no blocking findings"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "autoFix": {
+      "fixed": [],
+      "remaining": []
+    },
+    "verify": {
+      "ok": true,
+      "output": "[verify] syntax src/demo/drs.test.js: OK\n[verify] syntax src/demo/features.js: OK\n[verify] syntax src/demo/lap-compare.test.js: OK\n[verify] syntax src/demo/legend.test.js: OK\n[verify] syntax src/demo/render.js: OK\n[verify] syntax src/demo/telemetry.js: OK\n[verify] syntax src/demo/telemetry.test.js: OK\n[verify] syntax src/demo/topspeed.test.js: OK\n[verify] syntax src/factory/evidence.js: OK\n[verify] syntax src/factory/fixer.js: OK\n[verify] syntax src/factory/index.js: OK\n[verify] syntax src/factory/qodo.js: OK\n[verify] syntax src/factory/review-config.test.js: OK\n[verify] syntax src/factory/review.js: OK\n[verify] syntax src/factory/tickets.js: OK\n[verify] syntax scripts/automation.mjs: OK\n[verify] syntax scripts/compare-review.mjs: OK\n[verify] syntax scripts/mine-rules.mjs: OK\n[verify] syntax scripts/verify.mjs: OK\n[verify] syntax scripts/verify.test.js: OK\n[verify] syntax tickets/changes/t-001-drs-zones.mjs: OK\n[verify] syntax tickets/changes/t-002-lap-compare.mjs: OK\n[verify] syntax tickets/changes/t-003-legend.mjs: OK\n[verify] syntax tickets/changes/t-004-topspeed.mjs: OK\n[verify] syntax tickets/changes/t-005-review-config.mjs: OK\n[verify] syntax tickets/changes/t-007-verify-change-scripts.mjs: OK\n✔ collectJsFiles includes ticket change scripts (4.830118ms)\n✔ collectJsFiles skips node_modules and non-JS files (3.12968ms)\n✔ DRS zones are detected on the fast straights (10.6562ms)\n✔ drs-zones feature renders bands and a section (5.508275ms)\n✔ sector times add up to (almost) the lap time (62.974537ms)\n✔ lap-compare feature renders a table with deltas (8.405437ms)\n✔ legend feature renders all four entries (8.011737ms)\n✔ lap has one sample every 10 m over 5,412 m (9.345666ms)\n✔ same seed produces the same lap (deterministic) (70.809169ms)\n✔ different seeds produce different laps (5.058741ms)\n✔ speed stays in a plausible F1 range and gears match speed (2.471644ms)\n✔ lap stats are sane (1.297915ms)\n✔ dashboard HTML contains all three charts and the stats (4.603008ms)\n✔ smoke: features.js loads and exports (2.872255ms)\n✔ loadReviewConfig: reads the Day 11 setup from the repo (4.086535ms)\n✔ loadReviewConfig: null when no config file exists (0.71361ms)\n✔ default profile: generic external-url blocker, nothing product-specific (498.350966ms)\n✔ custom profile: product-specific network blocker, demo warning, explicit allows (442.728707ms)\n✔ custom profile: same code, different feedback — not a different display (994.768235ms)\n✔ adjusted rule 1: relative local fetch is not a network violation, but file:// blocks fetch() (388.493247ms)\n✔ .pr_agent.toml mirrors the Day 11 custom setup (durable in the repo) (0.691926ms)\nℹ tests 21\nℹ suites 0\nℹ pass 21\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3251.467119\n[verify] tests: OK\ndashboard written: /home/hatch/workspace/qodo-hackathon/agent-factory/apps/f1-telemetry/index.html\n[verify] demo rebuild: OK\n"
+    }
+  },
+  "verdict": "APPROVED",
+  "demoArtifact": "apps/f1-telemetry/index.html",
+  "finishedAt": "2026-11-20T13:27:15.876Z"
+}

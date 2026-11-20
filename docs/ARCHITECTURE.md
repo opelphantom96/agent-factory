@@ -23,6 +23,14 @@ silently skip the next one.
   6. verify        node --test · node --check · demo rebuild
   7. approve /     all green + no blocking findings → APPROVED
      escalate      otherwise → ESCALATED with the findings list
+                   Day 14: a Qodo portal workflow adds the
+                   "Qodo approved" label when a finished PR review has
+                   zero Medium+ findings — except PRs touching the
+                   guarded path scripts/**, which always stay for a
+                   person (see review/workflow-day-14.md). The label is
+                   not a merge decision and does not replace CI, tests,
+                   or acceptance checks. Workflow NOT yet live in the
+                   portal (Day 14 INCOMPLETE — no portal access).
                                         │
                                         ▼
                  evidence/runs/<ticket>-<ts>.json
