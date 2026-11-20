@@ -1,0 +1,20 @@
+{
+  "acceptance": [
+    "A Qodo review call that fails after a healthy CLI probe leaves the record with approvalBasis (local checks only, naming the failed review and its reason) and qodoReviewPending=true — the record never reads as Qodo-backed when a review did not run",
+    "A blocker finding from the Qodo plan review blocks the run (planReview.ok false, verdict ESCALATED) exactly like a Qodo diff-review blocker",
+    "When both Qodo reviews actually run and pass, the record carries no approvalBasis/qodoReviewPending (no over-correction); the T-009 probe-unavailable behaviour is unchanged",
+    "Full verify suite green (25/25 existing tests + 4 new T-011 tests); nothing under scripts/** touched, gate not weakened; the 2 Medium findings from the 20:48 review stay resolved"
+  ],
+  "change": "tickets/changes/t-011-fix-qodo-high.mjs",
+  "files": [
+    "src/factory/index.js",
+    "src/factory/approval-basis.test.js"
+  ],
+  "goal": "Day 14 follow-up: fix the High finding the fresh Qodo review reported on PR #5 (https://github.com/opelphantom96/agent-factory/pull/5, review completed 20 Nov 2026 22:04 WIB, on head ce9295b). Finding verbatim: \"Failed reviews still appear approved\" — Bug, Correctness, severity HIGH, Action required, New, src/factory/index.js lines 167-169. Substance: \"runTicket sets approvalBasis and qodoReviewPending from the initial probe of record.qodo.available, NOT from the actual plan-review and code-review results. So if the plan review or code review FAILED, the run record can still read as approved.\" The two earlier Medium findings from the 20:48 review stay Resolved — do not regress them. Root cause (two parts, same class — the record was derived from the start-of-run probe instead of the actual review results): (1) Stage 7 keyed approvalBasis/qodoReviewPending off record.qodo.available, the `qodo --version` probe taken at run start. qodoReview() re-probes and then runs `qodo review <target>`; that call can still fail (CLI error, timeout, wrong subcommand) after a healthy probe. When it did, stages 2/4 recorded qodo: {available:false, reason} but the top-level record kept no approvalBasis and no qodoReviewPending, so an APPROVED verdict read as Qodo-backed when neither actual Qodo review ran. The T-009 fix only covered the probe-says-unavailable case. (2) Stage 2 recorded the Qodo plan review's findings but never merged them into the plan-review blockers (unlike stage 4, which merges the Qodo diff findings). A [blocker] from Qodo's plan review was ignored, so a failed plan review could still end APPROVED. Fix plan: (1) derive the approval basis in stage 7 from the actual results — qodoPlan.available && qodoDiff.available — naming which review failed and why; the console summary line must use the same derivation, not the probe. (2) Merge Qodo plan findings into the plan findings/blockers, exactly like stage 4 does for diff findings. Tests are written test-first in src/factory/approval-basis.test.js (fake-qodo integration tests: probe-healthy + review-fails, Qodo plan blocker, clean-review control, no-CLI control). Fix in src/factory/index.js only — NOT scripts/**, so PR #5 stays label-eligible.",
+  "id": "T-011",
+  "status": "done",
+  "tests": [
+    "src/factory/approval-basis.test.js"
+  ],
+  "title": "Day 14 follow-up: fix Qodo's High finding on PR #5 — failed reviews still appear approved"
+}
