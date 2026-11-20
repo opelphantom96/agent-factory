@@ -52,6 +52,7 @@ Qodo account signed in, repo connected to Qodo.
 | T-003 | Colour legend | `evidence/runs/T-003-2026-11-14T11-20-42-638Z.json` |
 | T-004 | Top-speed marker (PR Resolver demo — see Day 7) | `evidence/runs/T-004-2026-11-14T11-21-06-213Z.json` |
 | T-005 | Day 11 custom review setup (`review/review-config.json`) | `evidence/runs/T-005-2026-11-17T01-28-38-499Z.json` |
+| T-008 | Day 14 braking-zones feature (outside the protected `scripts/**` path) | `evidence/runs/T-008-2026-11-20T13-30-57-066Z.json` |
 
 ## Week 3 — Connect tools, agents and code review
 

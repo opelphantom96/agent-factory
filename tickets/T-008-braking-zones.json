@@ -1,0 +1,18 @@
+{
+  "acceptance": [
+    "Braking zones (brake on for >= 50 m) are marked on the speed chart with their ranges listed",
+    "Tests pass (npm test) including the new src/demo/braking.test.js"
+  ],
+  "change": "tickets/changes/t-008-braking-zones.mjs",
+  "files": [
+    "src/demo/features.js",
+    "src/demo/braking.test.js"
+  ],
+  "goal": "Day 14 outside-path test PR: add a braking-zones feature to the F1 telemetry demo (detect contiguous braking runs, shade them on the speed chart, list them). This change touches nothing under the protected scripts/** path, so it is the PR that tests the label-eligible side of the Day 14 workflow: if its completed Qodo review has zero Medium+ findings, the workflow should add the Qodo approved label.",
+  "id": "T-008",
+  "status": "done",
+  "tests": [
+    "src/demo/braking.test.js"
+  ],
+  "title": "Day 14: braking-zones feature (outside the protected path)"
+}

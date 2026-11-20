@@ -116,3 +116,40 @@ FEATURES.push({
     return { svgExtra: svg };
   },
 });
+
+export function detectBrakingZones(samples) {
+  // A braking zone is a contiguous run with brake on for >= 50 m.
+  const zones = [];
+  let start = null;
+  for (let i = 0; i < samples.length; i++) {
+    const braking = samples[i].brake === 1;
+    if (braking && start === null) start = samples[i].distance;
+    if ((!braking || i === samples.length - 1) && start !== null) {
+      const end = braking ? samples[i].distance : samples[i - 1].distance;
+      if (end - start >= 50) zones.push({ startM: start, endM: end });
+      start = null;
+    }
+  }
+  return zones;
+}
+
+FEATURES.push({
+  id: 'braking-zones',
+  title: 'Braking zones',
+  render(ctx) {
+    const zones = detectBrakingZones(ctx.samples);
+    const top = ctx.yForSpeed(350);
+    const bottom = ctx.yForSpeed(0);
+    let rects = '';
+    for (const z of zones) {
+      const x1 = ctx.xFor(z.startM);
+      const x2 = ctx.xFor(z.endM);
+      const cx = (x1 + x2) / 2;
+      rects += '<rect x="' + x1.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + (x2 - x1).toFixed(1) + '" height="' + (bottom - top).toFixed(1) + '" fill="#ea580c" opacity="0.08"/>';
+      rects += '<text x="' + cx.toFixed(1) + '" y="' + (top + 14).toFixed(1) + '" text-anchor="middle" font-size="11" fill="#ea580c">BRAKE</text>';
+    }
+    const list = zones.map(function (z) { return z.startM + '–' + z.endM + ' m'; }).join(', ');
+    const html = '<section><h2>Braking zones</h2><p>' + zones.length + ' braking zone(s) detected (brake on for ≥ 50 m): ' + list + '</p></section>';
+    return { svgExtra: rects, htmlExtra: html };
+  },
+});
