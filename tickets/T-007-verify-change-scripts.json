@@ -1,0 +1,19 @@
+{
+  "acceptance": [
+    "npm run verify syntax-checks ticket change scripts (tickets/changes/*.mjs) — a syntax error there fails the gate",
+    "scripts/verify.mjs exports collectJsFiles() and the gate runner only runs when the file is executed directly",
+    "Tests pass (npm test) including the new scripts/verify.test.js coverage tests"
+  ],
+  "change": "tickets/changes/t-007-verify-change-scripts.mjs",
+  "files": [
+    "scripts/verify.mjs",
+    "scripts/verify.test.js"
+  ],
+  "goal": "Day 14 gate fix (inside the protected scripts/** path): the Day 9 quality gate (`npm run verify`) claims to syntax-check every source file but never checked ticket change scripts (tickets/changes/*.mjs) — executable code the factory runs on every ticket. Close that hole so a broken change script fails the gate before the factory runs it, and make the covered file list testable via an exported collectJsFiles().",
+  "id": "T-007",
+  "status": "done",
+  "tests": [
+    "scripts/verify.test.js"
+  ],
+  "title": "Day 14: gate must syntax-check ticket change scripts"
+}
