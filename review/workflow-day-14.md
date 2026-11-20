@@ -136,3 +136,14 @@ presented as configured or tested in the portal.
    `~/workspace/qodo-hackathon/day-14-discussion-comment.md`) with the
    observed results, and flip this file + `docs/CHALLENGES.md` to complete
    only when the workflow is really live and both PRs are observed.
+
+## Re-review trigger note (20 Nov 2026, 22:28 WIB)
+
+Reopening PR #4 twice (22:05 and 22:21–22:22 WIB) produced no new Qodo
+review within 3–5 minutes, unlike PR #5, where each reopen followed a new
+commit and a fresh review completed in ~2 minutes. Hypothesis: Qodo
+re-reviews a reopened PR only when its head changed. This docs-only commit
+(no code, no `scripts/**` change) is pushed solely to give the PR a new head
+and test that hypothesis. The guard test itself is unchanged — the branch
+still touches `scripts/verify.mjs`, so a clean review must still get no
+label.
