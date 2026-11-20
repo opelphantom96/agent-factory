@@ -156,6 +156,18 @@ export function runTicket(ticketId) {
   // ── 7. approve / escalate ────────────────────────────────────────────
   const unresolved = blockers.filter((b) => b.severity === 'blocker');
   record.verdict = unresolved.length === 0 ? 'APPROVED' : 'ESCALATED';
+  // The factory's APPROVED verdict covers the LOCAL gates only (spec,
+  // plan review, code review, verify). When the Qodo review never ran
+  // (Qodo CLI unavailable), a bare APPROVED next to "qodo: unavailable"
+  // reads as if a Qodo review backed the approval — it did not. State
+  // the basis on the record: the real Qodo review still has to happen
+  // on the PR. (Day 14 follow-up, ticket T-009: Qodo flagged the T-008
+  // record for exactly this — qodo.available=false with verdict
+  // APPROVED.)
+  if (!record.qodo.available) {
+    record.approvalBasis = 'local checks only (spec, plan review, code review, verify) — Qodo review did not run at factory time and is still required on the PR';
+    record.qodoReviewPending = true;
+  }
   record.demoArtifact = 'apps/f1-telemetry/index.html';
   record.finishedAt = new Date().toISOString();
   const evidenceFile = recordRun(ROOT, record);

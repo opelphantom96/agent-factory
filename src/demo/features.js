@@ -11,7 +11,7 @@
 // ctx = { samples, stats, lap }. svgExtra is injected into the speed chart,
 // htmlExtra is appended after the charts.
 
-import { generateLap } from './telemetry.js';
+import { generateLap, SAMPLE_STEP_M, LAP_LENGTH_M } from './telemetry.js';
 
 export const FEATURES = [
   // Features are added by factory tickets (T-001, T-002, T-003, ...).
@@ -119,13 +119,20 @@ FEATURES.push({
 
 export function detectBrakingZones(samples) {
   // A braking zone is a contiguous run with brake on for >= 50 m.
+  // Each sample stands for one SAMPLE_STEP_M segment starting at its
+  // distance, so a run's true length is (last - first + step): a run of
+  // five samples covers 50 m. Measuring first-to-last sample only
+  // understates every run by one step (a 50 m run read as 40 m and was
+  // dropped; every run under 60 m of coverage was missed). endM is the
+  // true end of the last sample's segment, clamped to the lap length.
   const zones = [];
   let start = null;
   for (let i = 0; i < samples.length; i++) {
     const braking = samples[i].brake === 1;
     if (braking && start === null) start = samples[i].distance;
     if ((!braking || i === samples.length - 1) && start !== null) {
-      const end = braking ? samples[i].distance : samples[i - 1].distance;
+      const last = braking ? samples[i].distance : samples[i - 1].distance;
+      const end = Math.min(last + SAMPLE_STEP_M, LAP_LENGTH_M);
       if (end - start >= 50) zones.push({ startM: start, endM: end });
       start = null;
     }
