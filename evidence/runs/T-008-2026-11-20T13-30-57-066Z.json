@@ -1,0 +1,76 @@
+{
+  "ticket": "T-008",
+  "startedAt": "2026-11-20T13:30:51.310Z",
+  "qodo": {
+    "available": false,
+    "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+  },
+  "stages": {
+    "spec": {
+      "ok": true,
+      "errors": [],
+      "title": "Day 14: braking-zones feature (outside the protected path)"
+    },
+    "planReview": {
+      "ok": true,
+      "rulesChecked": 5,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "plan-ok",
+          "message": "plan satisfies AGENTS.md rules (5 steps)"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "implement": {
+      "ok": true,
+      "changeScript": "tickets/changes/t-008-braking-zones.mjs",
+      "changedFiles": [
+        "src/demo/features.js",
+        "src/demo/braking.test.js"
+      ],
+      "output": "added braking-zones feature to src/demo/features.js\nwrote src/demo/braking.test.js\n"
+    },
+    "codeReview": {
+      "ok": true,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "diff-ok",
+          "message": "2 file(s) changed, no blocking findings"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "autoFix": {
+      "fixed": [],
+      "remaining": []
+    },
+    "verify": {
+      "ok": true,
+      "output": "[verify] syntax src/demo/braking.test.js: OK\n[verify] syntax src/demo/drs.test.js: OK\n[verify] syntax src/demo/features.js: OK\n[verify] syntax src/demo/lap-compare.test.js: OK\n[verify] syntax src/demo/legend.test.js: OK\n[verify] syntax src/demo/render.js: OK\n[verify] syntax src/demo/telemetry.js: OK\n[verify] syntax src/demo/telemetry.test.js: OK\n[verify] syntax src/demo/topspeed.test.js: OK\n[verify] syntax src/factory/evidence.js: OK\n[verify] syntax src/factory/fixer.js: OK\n[verify] syntax src/factory/index.js: OK\n[verify] syntax src/factory/qodo.js: OK\n[verify] syntax src/factory/review-config.test.js: OK\n[verify] syntax src/factory/review.js: OK\n[verify] syntax src/factory/tickets.js: OK\n[verify] syntax scripts/automation.mjs: OK\n[verify] syntax scripts/compare-review.mjs: OK\n[verify] syntax scripts/mine-rules.mjs: OK\n[verify] syntax scripts/verify.mjs: OK\n✔ braking zones are detected where the brake is on (16.79526ms)\n✔ braking zones ignore short brake taps (4.962827ms)\n✔ braking-zones feature renders bands and a section (6.518359ms)\n✔ DRS zones are detected on the fast straights (11.155399ms)\n✔ drs-zones feature renders bands and a section (4.4573ms)\n✔ sector times add up to (almost) the lap time (25.520307ms)\n✔ lap-compare feature renders a table with deltas (26.055158ms)\n✔ legend feature renders all four entries (23.358447ms)\n✔ lap has one sample every 10 m over 5,412 m (35.033323ms)\n✔ same seed produces the same lap (deterministic) (21.830316ms)\n✔ different seeds produce different laps (14.49326ms)\n✔ speed stays in a plausible F1 range and gears match speed (1.202462ms)\n✔ lap stats are sane (0.460059ms)\n✔ dashboard HTML contains all three charts and the stats (9.719997ms)\n✔ smoke: features.js loads and exports (3.339445ms)\n✔ loadReviewConfig: reads the Day 11 setup from the repo (2.346888ms)\n✔ loadReviewConfig: null when no config file exists (0.625658ms)\n✔ default profile: generic external-url blocker, nothing product-specific (513.282032ms)\n✔ custom profile: product-specific network blocker, demo warning, explicit allows (397.186797ms)\n✔ custom profile: same code, different feedback — not a different display (668.581834ms)\n✔ adjusted rule 1: relative local fetch is not a network violation, but file:// blocks fetch() (367.359585ms)\n✔ .pr_agent.toml mirrors the Day 11 custom setup (durable in the repo) (3.12968ms)\nℹ tests 22\nℹ suites 0\nℹ pass 22\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 2759.995271\n[verify] tests: OK\ndashboard written: /home/hatch/workspace/qodo-hackathon/agent-factory/apps/f1-telemetry/index.html\n[verify] demo rebuild: OK\n"
+    }
+  },
+  "verdict": "APPROVED",
+  "approvalBasis": "local checks only (spec, plan review, code review, verify) — Qodo review did not run at factory time and is still required on the PR",
+  "qodoReviewPending": true,
+  "correction": {
+    "at": "2026-11-20T14:41:40Z",
+    "by": "ticket T-009 (Day 14 follow-up: fix Qodo Medium findings on PR #5)",
+    "reason": "Qodo review on PR #5 (20 Nov 2026) flagged this record: qodo.available=false next to a bare verdict APPROVED reads as approval resting on a Qodo review that never ran.",
+    "changed": [
+      "added approvalBasis stating the approval rests on local checks only",
+      "added qodoReviewPending=true (the real Qodo review happens on the PR)",
+      "no stage results, outputs, or the verdict value itself were altered — the verdict still records that all local gates passed"
+    ]
+  },
+  "demoArtifact": "apps/f1-telemetry/index.html",
+  "finishedAt": "2026-11-20T13:30:57.066Z"
+}

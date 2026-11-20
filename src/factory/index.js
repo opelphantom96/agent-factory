@@ -89,10 +89,19 @@ export function runTicket(ticketId) {
   const plan = buildPlan(ticket);
   const planFindings = reviewPlan(ROOT, ticket, plan);
   const qodoPlan = qodoReview({ scope: 'plan', target: ticket._file });
-  const planBlockers = planFindings.filter((f) => f.severity === 'blocker');
+  // Qodo's plan findings count exactly like the local ones: a blocker
+  // from the Qodo plan review blocks the run, the same way a blocker
+  // from the Qodo diff review blocks it at stage 4. Before this, the
+  // Qodo plan findings were recorded in the stage but never evaluated,
+  // so a plan review that returned a blocker could still end APPROVED.
+  // (T-011: Qodo High "Failed reviews still appear approved", PR #5.)
+  const allPlanFindings = qodoPlan.available
+    ? [...planFindings, ...qodoPlan.findings]
+    : planFindings;
+  const planBlockers = allPlanFindings.filter((f) => f.severity === 'blocker');
   record.stages.planReview = {
     ok: planBlockers.length === 0, rulesChecked: rules.length,
-    findings: planFindings, qodo: qodoPlan.available ? { findings: qodoPlan.findings } : { available: false, reason: qodoPlan.reason },
+    findings: allPlanFindings, qodo: qodoPlan.available ? { findings: qodoPlan.findings } : { available: false, reason: qodoPlan.reason },
   };
   log('plan-review', `${planFindings.length} finding(s), ${planBlockers.length} blocker(s); qodo: ${qodoPlan.available ? 'reviewed' : 'unavailable — local fallback'}`);
   blockers.push(...planBlockers);
@@ -156,6 +165,28 @@ export function runTicket(ticketId) {
   // ── 7. approve / escalate ────────────────────────────────────────────
   const unresolved = blockers.filter((b) => b.severity === 'blocker');
   record.verdict = unresolved.length === 0 ? 'APPROVED' : 'ESCALATED';
+  // The factory's APPROVED verdict covers the LOCAL gates only (spec,
+  // plan review, code review, verify). Whether a Qodo review actually
+  // backed it must come from the ACTUAL review results — qodoPlan and
+  // qodoDiff — not from the start-of-run probe (record.qodo). The probe
+  // only says the CLI exists; either review call can still fail (CLI
+  // error, timeout, wrong subcommand) after a healthy probe, and when
+  // it does the record must say so: the real Qodo review still has to
+  // happen on the PR. (Day 14 follow-up, ticket T-011: Qodo flagged
+  // exactly this on PR #5 — High, "Failed reviews still appear
+  // approved": approvalBasis and qodoReviewPending were set from
+  // record.qodo.available, the initial probe, instead of the actual
+  // plan-review and code-review results. The T-009 fix only covered the
+  // probe-says-unavailable case.)
+  const qodoReviewsRan = qodoPlan.available && qodoDiff.available;
+  if (!qodoReviewsRan) {
+    const missing = [
+      ...(!qodoPlan.available ? ['plan review: ' + qodoPlan.reason] : []),
+      ...(!qodoDiff.available ? ['code review: ' + qodoDiff.reason] : []),
+    ].join('; ');
+    record.approvalBasis = 'local checks only (spec, plan review, code review, verify) — Qodo review did not run at factory time and is still required on the PR (' + missing + ')';
+    record.qodoReviewPending = true;
+  }
   record.demoArtifact = 'apps/f1-telemetry/index.html';
   record.finishedAt = new Date().toISOString();
   const evidenceFile = recordRun(ROOT, record);
@@ -170,7 +201,7 @@ export function runTicket(ticketId) {
   console.log('\n' + '='.repeat(60));
   console.log(`Ticket ${ticketId}: ${record.verdict}`);
   console.log(`  title   : ${ticket.title}`);
-  console.log(`  qodo    : ${record.qodo.available ? `reviewed (${record.qodo.version})` : 'unavailable — local fallback'}`);
+  console.log(`  qodo    : ${qodoReviewsRan ? `reviewed (${record.qodo.version})` : 'review did not run — local fallback'}`);
   console.log(`  fixed   : ${fixed.length} finding(s) auto-fixed`);
   console.log(`  evidence: ${evidenceFile}`);
   console.log('='.repeat(60));
