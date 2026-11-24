@@ -1,0 +1,65 @@
+{
+  "ticket": "T-006",
+  "startedAt": "2026-11-18T16:06:40.148Z",
+  "qodo": {
+    "available": false,
+    "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+  },
+  "stages": {
+    "spec": {
+      "ok": true,
+      "errors": [],
+      "title": "Day 13: evidence-log-check skill (AGENTS.md rule 4)"
+    },
+    "planReview": {
+      "ok": true,
+      "rulesChecked": 5,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "plan-ok",
+          "message": "plan satisfies AGENTS.md rules (5 steps)"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "implement": {
+      "ok": true,
+      "changeScript": "tickets/changes/t-006-evidence-log-check.mjs",
+      "changedFiles": [
+        "skills/evidence-log-check/SKILL.md",
+        "scripts/evidence-log-check.mjs",
+        "scripts/evidence-log-check.test.js"
+      ],
+      "output": "wrote skills/evidence-log-check/SKILL.md\nwrote scripts/evidence-log-check.mjs\nwrote scripts/evidence-log-check.test.js\nwrote 3 file(s) (Day 13 evidence-log-check skill)\n"
+    },
+    "codeReview": {
+      "ok": true,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "diff-ok",
+          "message": "3 file(s) changed, no blocking findings"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "autoFix": {
+      "fixed": [],
+      "remaining": []
+    },
+    "verify": {
+      "ok": true,
+      "output": "[verify] syntax src/demo/drs.test.js: OK\n[verify] syntax src/demo/features.js: OK\n[verify] syntax src/demo/lap-compare.test.js: OK\n[verify] syntax src/demo/legend.test.js: OK\n[verify] syntax src/demo/render.js: OK\n[verify] syntax src/demo/telemetry.js: OK\n[verify] syntax src/demo/telemetry.test.js: OK\n[verify] syntax src/demo/topspeed.test.js: OK\n[verify] syntax src/factory/evidence.js: OK\n[verify] syntax src/factory/fixer.js: OK\n[verify] syntax src/factory/index.js: OK\n[verify] syntax src/factory/qodo.js: OK\n[verify] syntax src/factory/review-config.test.js: OK\n[verify] syntax src/factory/review.js: OK\n[verify] syntax src/factory/tickets.js: OK\n[verify] syntax scripts/automation.mjs: OK\n[verify] syntax scripts/compare-review.mjs: OK\n[verify] syntax scripts/evidence-log-check.mjs: OK\n[verify] syntax scripts/evidence-log-check.test.js: OK\n[verify] syntax scripts/mine-rules.mjs: OK\n[verify] syntax scripts/verify.mjs: OK\n✔ valid run record passes every check (1.916426ms)\n✔ missing stage fails stages-present and verdict-consistent (0.401182ms)\n✔ auto-fix success (T-004 shape) is consistent with APPROVED (0.234963ms)\n✔ auto-fix with remaining findings fails verdict-consistent (0.354933ms)\n✔ APPROVED with a failing stage fails verdict-consistent (0.189725ms)\n✔ ESCALATED with a failing stage is consistent (0.403566ms)\n✔ filename and ticket mismatch fails (0.229204ms)\n✔ ticket missing from EVIDENCE.md fails logged-in-evidence-md (0.417456ms)\n✔ day-11-style record is other evidence, not a failed run (0.821032ms)\n✔ checkEvidenceLog passes on a healthy fixture (2.076937ms)\n✔ checkEvidenceLog fails on a missing stage (two checks) and on unparseable JSON (52.456672ms)\n✔ ticket with no run record is reported (0.798388ms)\n✔ missing runs directory throws (1.928785ms)\n✔ DRS zones are detected on the fast straights (10.865386ms)\n✔ drs-zones feature renders bands and a section (5.632372ms)\n✔ sector times add up to (almost) the lap time (7.108528ms)\n✔ lap-compare feature renders a table with deltas (63.007485ms)\n✔ legend feature renders all four entries (7.175238ms)\n✔ lap has one sample every 10 m over 5,412 m (62.506764ms)\n✔ same seed produces the same lap (deterministic) (6.273896ms)\n✔ different seeds produce different laps (3.702577ms)\n✔ speed stays in a plausible F1 range and gears match speed (3.40524ms)\n✔ lap stats are sane (1.227582ms)\n✔ dashboard HTML contains all three charts and the stats (4.049887ms)\n✔ smoke: features.js loads and exports (3.162186ms)\n✔ loadReviewConfig: reads the Day 11 setup from the repo (2.376176ms)\n✔ loadReviewConfig: null when no config file exists (0.55978ms)\n✔ default profile: generic external-url blocker, nothing product-specific (337.202912ms)\n✔ custom profile: product-specific network blocker, demo warning, explicit allows (314.859872ms)\n✔ custom profile: same code, different feedback — not a different display (636.190845ms)\n✔ adjusted rule 1: relative local fetch is not a network violation, but file:// blocks fetch() (324.6956"
+    }
+  },
+  "verdict": "APPROVED",
+  "demoArtifact": "apps/f1-telemetry/index.html",
+  "finishedAt": "2026-11-18T16:06:44.799Z"
+}

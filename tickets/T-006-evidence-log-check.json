@@ -1,0 +1,20 @@
+{
+  "acceptance": [
+    "skills/evidence-log-check/SKILL.md exists with name, activation description, required inputs/context, steps, expected results, evidence to save, stop conditions",
+    "scripts/evidence-log-check.mjs runs the check and exits 0 on the current evidence log",
+    "Tests pass (npm test) including the new checker tests"
+  ],
+  "change": "tickets/changes/t-006-evidence-log-check.mjs",
+  "files": [
+    "skills/evidence-log-check/SKILL.md",
+    "scripts/evidence-log-check.mjs",
+    "scripts/evidence-log-check.test.js"
+  ],
+  "goal": "Teach the factory a new skill (Day 13): turn the recurring evidence-log completeness check (AGENTS.md rule 4 — every pipeline stage writes its result to evidence/runs/) into a reusable SKILL.md with a deterministic checker script, so any agent session can verify every run left a complete trace before evidence is shared. The fresh-session trial of the skill is a Day 13 challenge step recorded separately in evidence.",
+  "id": "T-006",
+  "status": "done",
+  "tests": [
+    "scripts/evidence-log-check.test.js"
+  ],
+  "title": "Day 13: evidence-log-check skill (AGENTS.md rule 4)"
+}
