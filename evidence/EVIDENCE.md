@@ -5,14 +5,14 @@
 to https://github.com/opelphantom96/agent-factory, branch master).
 **Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
 "You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
-**Status at last update:** 18 Nov 2026 ~23:10 WIB. 34/34 tests pass,
-`npm run verify` green, 6/6 factory tickets APPROVED. Day 11 challenge
-email arrived 16 Nov 19:04 WIB; the REAL Qodo before/after comparison is
-done (see Week 3 below). Day 12 challenge email arrived 17 Nov 19:23 WIB;
-the ticket-source check is done with a MIXED result (see Week 3 below).
-Day 13 challenge email arrived 18 Nov 19:41 WIB; the evidence-log-check
-skill is done (see Week 3 below). Qodo account signed in, repo connected
-to Qodo.
+**Status at last update:** 25 Nov 2026 ~03:50 WIB (master, Day 13–17 merged).
+`npm run verify` green after the merges (44/44 tests after the Day 14 merge;
+re-verified after the Day 16–17 merge — see verify output). Day 11–17 done
+(see Week 3/4 below): Day 14 COMPLETE (workflow + guard live, Discussion #16
+submitted); Day 15 submitted (X thread, posts 2–5 unverified); Day 16
+INCOMPLETE (Arnica org-only block, Discussion #18 posted 23 Nov);
+Day 17 ACCEPT (Discussion #19 posted 24 Nov 21:07 WIB). Qodo account signed
+in, repo connected to Qodo.
 
 ## How to read this log
 
@@ -55,6 +55,7 @@ to Qodo.
 | T-004 | Top-speed marker (PR Resolver demo — see Day 7) | `evidence/runs/T-004-2026-11-14T11-21-06-213Z.json` |
 | T-005 | Day 11 custom review setup (`review/review-config.json`) | `evidence/runs/T-005-2026-11-17T01-28-38-499Z.json` |
 | T-006 | Evidence-log-check skill, Day 13 (`skills/evidence-log-check/SKILL.md` + checker) | `evidence/runs/T-006-2026-11-18T16-06-44-799Z.json` |
+| T-007 | Day 14 gate fix: `npm run verify` now syntax-checks `tickets/changes/*.mjs` too (26 files gated) + `scripts/verify.test.js` | `evidence/runs/T-007-2026-11-20T13-27-15-878Z.json` |
 | T-008 | Day 14 braking-zones feature (outside the protected `scripts/**` path) | `evidence/runs/T-008-2026-11-20T13-30-57-066Z.json` |
 | T-009 | Day 14 follow-up: fix Qodo's 2 Medium findings on PR #5 (braking measurement + evidence honesty) | `evidence/runs/T-009-2026-11-20T14-43-15-000Z.json` |
 | T-011 | Day 14 follow-up: fix Qodo's High finding on PR #5 (failed reviews still appear approved — approval basis from actual review results) | `evidence/runs/T-011-2026-11-20T15-14-58-941Z.json` |
@@ -65,23 +66,37 @@ to Qodo.
 |---|---|---|
 | Day 11 (16 Nov) | **Make the reviewer yours** (email 16 Nov 19:04 WIB, Gmail id `1a1e43e3074e71e3`) | ✅ Custom setup: `review/review-config.json` — 4 product decisions (offline-first demo, zero runtime deps, intentional factory logging, clean dashboard output). Factory reviews with the custom profile by default (`src/factory/index.js`, ticket T-005 APPROVED). Local stand-in before/after on the SAME sample change: `evidence/runs/day-11-review-comparison.json` — original review: 1 finding (generic `external-url` blocker); customized review: 4 findings (`network-access` blocker with offline guidance, `console-log-demo` warning, `local-data-load` + `console-log-factory` infos). Feedback changed, display unchanged. **REAL Qodo comparison — DONE 17 Nov ~20:00 WIB on PR #1 (https://github.com/opelphantom96/agent-factory/pull/1, branch `day-11-real-comparison`, commit `744d419`, still open/unmerged): `evidence/runs/day-11-real-comparison.json` — default setup: 3 bug findings; custom setup (portal Custom instructions + `/agentic_review`): 4 bugs — same 3 unchanged + NEW "Demo timing loads print to the console" (Medium, rule 4 CLEAN DASHBOARD worked), nothing lost, factory `console.log` still unflagged (rule 3 held). Attribution caveat recorded honestly: the new finding cannot be proven to come from the portal instructions alone (repo config was also cited as evidence). Decision: **KEEP with ONE ADJUSTMENT to rule 1** — a relative local fetch is not a network violation, but fetch() from file:// is still a real limitation; say so and suggest inlining (applied in `review/review-config.json`, `.pr_agent.toml`, and the local reviewer). Setup now durable in the repo as `.pr_agent.toml` (PR-Agent reads repo config from the default branch). Tests: `src/factory/review-config.test.js` (7 tests). Discussion submission: ✅ SUBMITTED 17 Nov 18:30 WIB as opelphantom96 — comment https://github.com/orgs/qodo-hackathon/discussions/13#discussioncomment-19678255; real-comparison follow-up comment ✅ POSTED 17 Nov 20:11 WIB — https://github.com/orgs/qodo-hackathon/discussions/13#discussioncomment-19680610. |
 | Day 12 (17 Nov) | **Give your factory the full picture** (email 17 Nov 19:23 WIB, Gmail id `1a1e975ea67a7447`) | ✅ DONE 17 Nov ~20:16 WIB — MIXED result, recorded honestly in `evidence/runs/day-12-ticket-source-check.json`. Requirement: offline-first (from ticket T-005 + `review/review-config.json`). Source given to Qodo: GitHub Issue #2 (https://github.com/opelphantom96/agent-factory/issues/2, created 17 Nov 20:14 WIB as opelphantom96), referenced in the PR #1 description (https://github.com/opelphantom96/agent-factory/pull/1, code unchanged, commit `744d419`). My own verification first (code inspection + Node behavior check with fetch mocked to throw): `loadLiveTiming()` rejects with no offline path (violates); relative local fetch satisfies the letter but `fetch()` itself fails from file://; the test never calls the loader; factory `console.log` is allowed. Qodo re-review (`/agentic_review` 20:15 WIB, updated ~20:16 WIB): **context level — YES**: Context sources lists "✅ Tickets: 🎫 Day 12: demo must work offline from file:// — no network access in demo code" linking to Issue #2, and a new "📎 Requirement gaps (0)" header appeared. **Finding level — NO**: the 4 findings are IDENTICAL to the Day 11 custom review (no new finding, no new inline comment); NONE cites Issue #2 or mentions "T-005". Finding 1 still flags the network fetch (Action required) but cites `review-config.json` + the prep record, not the Issue. Expectations only partly met (network fetch flagged as a blocker but without the Issue citation; relative local fetch not flagged as a network problem — finding 3 frames it as a file:// limitation, consistent with adjusted rule 1). Process change: check "Context sources / Tickets" for source access; do not assume findings cite a linked ticket just because it is listed; keep requirements in the repo config, because that is what findings actually cite. Submission: ✅ SUBMITTED 17 Nov 20:21 WIB as opelphantom96 — comment https://github.com/orgs/qodo-hackathon/discussions/14#discussioncomment-19680843 (verified live 18 Nov 08:24 WIB; the earlier "⏳ draft prepared" note was stale). |
-| Day 13 (18 Nov) | **Teach your factory a new skill** (email 18 Nov 19:41 WIB, Gmail id `1a1eead8f073ebf8`) | ✅ DONE 18 Nov ~23:10 WIB — skill: `skills/evidence-log-check/SKILL.md` (AGENTS.md rule 4: every pipeline stage writes its result to `evidence/runs/`) + deterministic checker `scripts/evidence-log-check.mjs` (zero deps) + 13 tests (`scripts/evidence-log-check.test.js`). Ticket T-006 ran through the factory: APPROVED (record `evidence/runs/T-006-2026-11-18T16-06-44-799Z.json`; Qodo CLI unavailable locally — local fallback; real Qodo review on the PR, pending). Fresh-session trial (new subagent session, skill read first, invoked explicitly on the live log — 6 run records): first run FAIL (1 failure) — T-006 not yet mentioned in this log (`logged-in-evidence-md`); the check caught a real gap in the log itself. Refinements from the trial: (1) checker v1 wrongly demanded `ok` on every stage — real schema: `autoFix` records `{fixed, remaining}` (success = empty) and `codeReview.ok` is pre-fix, superseded by `afterFix.findings` (T-004); checker + skill fixed to match the real schema (first checker run on real history: FAIL 5; after fix: PASS 5); (2) skill wording: `[root]` is optional (defaults to repo root), step 4 lists six per-record checks plus the cross-check; (3) verdict line singular ("1 failure"). After the fixes + adding T-006 to this log, re-run: `EVIDENCE LOG: PASS (6 records, 0 failures)`. Trial evidence: `evidence/runs/day-13-fresh-session.json` (+ check reports `evidence-log-check-2026-11-18T16-07-11-549Z.json` FAIL and the re-run PASS report). Discussion #15 submission: prepared (comment text + links in the parent handoff); posting + verification via browser — parent step, PR + Qodo review likewise. |
-| Day 14 (19–20 Nov) | Connect tools, agents and code review (email 20 Nov 19:00 WIB) | ✅ DONE. Workflow `agent-factory-quality-gate` + guard `scripts/**` created in the Qodo portal 20 Nov ~21:34 WIB; test PRs #4 (guard-fix) and #5 (braking-zones) opened 20 Nov ~20:47 WIB. Real Qodo review on PR #5 (completed 20:48 WIB) reported 2 Medium findings — braking zones under-measured by one sample step, and the T-008 evidence record reading as Qodo-backed approval. Both fixed in ticket T-009 (record `evidence/runs/T-009-2026-11-20T14-43-15-000Z.json`); fix pushed to PR #5 for re-review. Fresh Qodo re-review on PR #5 (completed 22:04 WIB) reported 1 new High finding — "Failed reviews still appear approved": approvalBasis/qodoReviewPending came from the start-of-run probe, not the actual review results, and Qodo plan findings were never evaluated. Fixed in ticket T-011 (record `evidence/runs/T-011-2026-11-20T15-14-58-941Z.json`); the 2 Mediums stay resolved; fix pushed to PR #5 for re-review. |
-| Day 15 (20 Nov) | Connect tools, agents and code review. | ⏳ Submitted; posts 2–5 unverified. |
+| Day 13 (18 Nov) | **Teach your factory a new skill** (email 18 Nov 19:41 WIB, Gmail id `1a1eead8f073ebf8`) | ✅ DONE 18 Nov ~23:10 WIB — skill: `skills/evidence-log-check/SKILL.md` (AGENTS.md rule 4: every pipeline stage writes its result to `evidence/runs/`) + deterministic checker `scripts/evidence-log-check.mjs` (zero deps) + 13 tests (`scripts/evidence-log-check.test.js`). Ticket T-006 ran through the factory: APPROVED (record `evidence/runs/T-006-2026-11-18T16-06-44-799Z.json`; Qodo CLI unavailable locally — local fallback; real Qodo review on the PR, pending). Fresh-session trial (new subagent session, skill read first, invoked explicitly on the live log — 6 run records): first run FAIL (1 failure) — T-006 not yet mentioned in this log (`logged-in-evidence-md`); the check caught a real gap in the log itself. Refinements from the trial: (1) checker v1 wrongly demanded `ok` on every stage — real schema: `autoFix` records `{fixed, remaining}` (success = empty) and `codeReview.ok` is pre-fix, superseded by `afterFix.findings` (T-004); checker + skill fixed to match the real schema (first checker run on real history: FAIL 5; after fix: PASS 5); (2) skill wording: `[root]` is optional (defaults to repo root), step 4 lists six per-record checks plus the cross-check; (3) verdict line singular ("1 failure"). After the fixes + adding T-006 to this log, re-run: `EVIDENCE LOG: PASS (6 records, 0 failures)`. Trial evidence: `evidence/runs/day-13-fresh-session.json` (+ check reports `evidence-log-check-2026-11-18T16-07-11-549Z.json` FAIL and the re-run PASS report). Discussion #15 submission: prepared (comment text + links in the parent handoff); posting + verification via browser — parent step, PR + Qodo review likewise. Merged into master 25 Nov. |
+| Day 14 (19 Nov) | **Turn your quality gate into a workflow** (email 20 Nov 19:00 WIB, Gmail id `1a1f8d423440091f`) | ✅ **COMPLETE 20 Nov 22:38 WIB.** Saved gate read + fixed: ticket T-007 APPROVED — `scripts/verify.mjs` exports `collectJsFiles()` (26 files gated, incl. all 6 change scripts) + `scripts/verify.test.js` (2 tests); 21/21 tests pass, `npm run verify` green. Workflow `agent-factory-quality-gate` (zero Medium+ findings → Add the Qodo approved label, repo `opelphantom96/agent-factory`) created and ACTIVE in the Qodo portal 21:34 WIB + guard (`scripts/**` always needs a person) saved — the portal opened via the browser's saved Google session, superseding the earlier "no portal access" blocker. Both test PRs observed live, predictions fulfilled: PR #5 got the "Qodo approved" label 22:19 WIB after a clean review (0 findings); PR #4 clean review 22:29 WIB, NO label (guard blocks `scripts/**`). Policy: `review/workflow-day-14.md`. Submission: ✅ Discussion #16 comment https://github.com/orgs/qodo-hackathon/discussions/16#discussioncomment-19777864 (opelphantom96, 22:38 WIB). |
+| Day 15 (20 Nov) | **Show your factory** (email 20 Nov 19:00 WIB, Gmail id `1a1f8d48688ab267`) | ✅ **SUBMITTED 20 Nov.** X/Twitter thread, @CrissNoo12 (5 posts, all ≤280 chars, @QodoAI tagged in post 1) + diagram `day15/factory-diagram.png` (1600×900, 8-stage flow); draft: `day15/day15-draft.md`. Post 1 verified LIVE: https://x.com/CrissNoo12/status/2123771284001828977. Submission: ✅ Discussion #17 comment https://github.com/orgs/qodo-hackathon/discussions/17#discussioncomment-19775063 (opelphantom96). ⚠️ Posts 2–5 UNVERIFIED — confirmation still waiting on the user. |
+| Day 16 (23 Nov) | **Scan your repo with Arnica** (email 23 Nov 19:04 WIB, Gmail id `1a2084acce60ed28`) | ⚠️ **INCOMPLETE — blocked before any scan.** Arnica GitHub guide (docs.arnica.io, verified 23 Nov): "Arnica supports an integration with organization accounts only. It means that integrations with personal accounts are prohibited." Installation step 4 ("Select the applicable organization") cannot be completed for a personal repo; "Only organization owners are able to install GitHub Apps." Repo: personal account opelphantom96/agent-factory, branch master, HEAD 2ff1a7b. No Arnica scan ran, so there are no findings to investigate and nothing was fabricated. Local diligence instead (23 Nov): `npm test` 21/21 pass, `npm run verify` green (tests OK + demo rebuild OK), secret-pattern grep over the repo clean (only hits are the factory's own `SECRET_PATTERNS` detector in `src/factory/review.js` and the words "secrets in code" in ticket T-005/config), zero runtime dependencies, CI pins actions/checkout@v4 + setup-node@v4. Diagram: `day15/factory-diagram.png` updated with an Arnica step marked BLOCKED/planned (script `day15/make-diagram.py`). Submission: Discussion #18 posted 23 Nov (INCOMPLETE/Arnica-blocked; comment 19834628). Unblock path: move the repo into a GitHub organization the user owns, or an Arnica exception for personal accounts. **Update 24 Nov:** a participant's public post in Discussion #18 (CamDuncalfe, read 24 Nov) proves a better unblock — create a FREE GitHub org, push a PRIVATE copy of `main` at the same commit into it, install Arnica on the org and scan the copy; the entry repo stays personal. Their scan completed 23 Nov (3 findings: 2 Medium actions-artipacked + 1 Low integrity hash), both Mediums fixed, Arnica auto-resolved them. Needs the user's GitHub account (org creation + push) — not done from here. Re-verified 24 Nov ~08:25 WIB at HEAD 963c70e: `npm test` 21/21 pass, `npm run verify` green (tests OK + demo rebuild OK). |
 
 Final dashboard: `apps/f1-telemetry/index.html` — verified to contain DRS
-zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **34/34
-pass** (`npm test`).
+zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **44/44
+pass** after the Day 14 merge (`npm test`); re-verified after the Day 16–17
+merge — see `npm run verify`.
 
 ## Week 3–4 + finale (16 Nov – 2 Dec)
 
 ⏳ Week 3 started: Day 11 done for real (see above). Day 12 done — MIXED
 ticket-source result (see above). Day 13 done — skill + fresh-session
 trial + refinements (see above); Discussion #15 submission + PR + Qodo
-review are browser steps (parent). Days 14–15 arrive by email, one per
-weekday. The factory already implements the W4 theme
+review are browser steps (parent). Day 14 arrived 20 Nov 19:00 WIB —
+COMPLETE 20 Nov 22:38 WIB (workflow live, guard proven on PR #5 / PR #4;
+see above). Day 15 arrived 20 Nov 19:00 WIB — SUBMITTED the same evening
+(post 1 live, Discussion #17; posts 2–5 unverified). The factory already implements the W4 theme
 (verify → approve/escalate) end-to-end; W4 will harden them per the daily
-instructions.
+instructions. Next challenge email: Day 18, Wed 25 Nov (~19:00 WIB).
+Day 16 arrived 23 Nov 19:04 WIB — INCOMPLETE, blocked (Arnica org-only;
+see above). Watch first saw the Day 16 email 24 Nov 08:17 WIB; re-verified
+green the same morning (21/21, verify OK, HEAD 963c70e). Org-copy unblock
+found in Discussion #18 (see above) — needs the user's GitHub account.
+Day 17 arrived 24 Nov 19:01 WIB — COMPLETE the same evening (Agent
+Session Review for real, session 20261124-123612-b29f, PR #4 / T-007,
+conclusion ACCEPT; Qodo CLI 2.7.0 installed, skill
+qodo-agent-session-review 1.0.1; Discussion #19 draft ready, not yet
+posted — needs the user's GitHub account). Full record:
+evidence/runs/day-17-decision-check.json + day17/.
 
 ## Still needs the user
 
@@ -94,12 +109,19 @@ instructions.
    pushed (master at 5609afa, PR #1 open for the Day 11 comparison,
    Issue #2 open for the Day 12 ticket-source check).
    The final submission needs a repo link — this is it.
-3. **Daily email (next: Day 14, Thu 19 Nov)** — Day 11 arrived 16 Nov
+3. **Daily email (next: Day 18, Wed 25 Nov)** — Day 11 arrived 16 Nov
    19:04 WIB and is done for real (see Week 3). Day 12 arrived 17 Nov
    19:23 WIB and is done — MIXED ticket-source result (see Week 3).
    Day 13 arrived 18 Nov 19:41 WIB and is done — skill + fresh-session
-   trial (see Week 3); Discussion #15 submission + PR + Qodo review are
-   browser steps (parent).
+   trial (see Week 3). Day 14 arrived 20 Nov 19:00 WIB — COMPLETE 20 Nov
+   22:38 WIB (see Week 3). Day 15 arrived 20 Nov 19:00 WIB — SUBMITTED
+   20 Nov (post 1 live, Discussion #17; posts 2–5 unverified,
+   confirmation still waiting on the user). Day 16 arrived 23 Nov 19:04
+   WIB — INCOMPLETE, blocked (Arnica org-only; Discussion #18 posted
+   23 Nov, comment 19834628). Day 17 arrived 24 Nov 19:01 WIB —
+   COMPLETE 24 Nov ~19:40 WIB (Agent Session Review, PR #4 / T-007,
+   conclusion ACCEPT; Discussion #19 posted 24 Nov 21:07 WIB, comment
+   19859639).
    Each email carries the next challenge instructions and the GitHub
    Discussion link for submitting it. The mailbox is checked daily
    ~08:17 WIB.

@@ -1,0 +1,86 @@
+{
+  "agent_session_review": {
+    "status": "COMPLETE \u2014 investigation done via Agent Session Review (not a setup report)",
+    "cli": "Qodo CLI 2.7.0 (>= 2.3.1), installed 24 Nov 19:2x WIB via https://get.qodo.ai",
+    "python": "3.12.3 (>= 3.9)",
+    "login": "andibugil94@gmail.com via browser Google sign-in 24 Nov 19:24 WIB",
+    "skill": "qodo-agent-session-review 1.0.1 installed for opencode/codex/gemini-cli",
+    "session_id": "20261124-123612-b29f",
+    "session_data": "~/.qodo/agent-session-review/sessions/20261124-123612-b29f/review-data.json",
+    "collect": "Complete: files/comments/reviews/threads/checks/statuses/readiness/history observed; annotations unavailable (MT-VALIDATION). First two collect attempts failed with invalid_token (transient, right after login); third attempt succeeded.",
+    "enrich": "day17/enrich.json applied; plan: read 253/500 lines, tests skipped as passing (3 CI verify checks success at head 2ff1a7b)",
+    "note": "Conclusion note recorded locally on PR #4 (ACCEPT)",
+    "export": "day17/agent-session-review-export.html (1053 KB)",
+    "serve": "Local server verified listening on 127.0.0.1:8765; plain URL correctly returns 403 (launcher access link required, not shared)",
+    "asr_decisions_page": "Requirements/Decisions compared against ticket T-007; the two planned decisions (include change scripts; import/execution guard) are the ones investigated"
+  },
+  "challenge": "Day 17: What did your agent decide?",
+  "checks": [
+    {
+      "command": "node -e import('./scripts/verify.mjs') then collectJsFiles('.')",
+      "name": "collector coverage",
+      "result": "26 files total; all 6 tickets/changes/*.mjs scripts included (t-001, t-002, t-003, t-004, t-005, t-007)",
+      "verdict": "PASS"
+    },
+    {
+      "command": "git show 8949899^:scripts/verify.mjs",
+      "name": "before/after control",
+      "result": "Before T-007 there was no collectJsFiles() at all; the gate looped only over src/ + scripts/ \u2014 the hole stated in the ticket is real and the fix closes exactly it.",
+      "verdict": "PASS"
+    },
+    {
+      "command": "node --check /tmp/broken-change.mjs (export const broken = ;)",
+      "name": "negative control (broken script fails the check)",
+      "result": "SyntaxError: Unexpected token ';' \u2014 exit 1. A broken change script fails node --check, which is exactly what the gate runs per file.",
+      "verdict": "PASS"
+    },
+    {
+      "command": "node --check tickets/changes/t-007-verify-change-scripts.mjs",
+      "name": "positive control (real change scripts valid)",
+      "result": "OK",
+      "verdict": "PASS"
+    },
+    {
+      "command": "node -e import('./scripts/verify.mjs') [import path] vs node scripts/verify.mjs [direct] vs absolute path from /tmp",
+      "name": "import-vs-execution guard (Qodo's flagged risk)",
+      "result": "Import path returns the file list WITHOUT running the gate (proven by the collector-coverage check above). Direct execution runs the gate (syntax lines printed, exit 0). Absolute-path invocation from /tmp also runs the gate (exit 0). The guard distinguishes correctly for every supported invocation tested (npm run verify, node scripts/verify.mjs, absolute path, import).",
+      "verdict": "PASS \u2014 Qodo's flagged failure mode does not reproduce under any supported invocation"
+    },
+    {
+      "command": "npm test && npm run verify",
+      "name": "full suite + gate",
+      "result": "21/21 tests pass; verify green (tests OK + demo rebuild OK); repo HEAD d8b526d, clean tree",
+      "verdict": "PASS"
+    }
+  ],
+  "conclusion": "ACCEPT the behavior (confirmed in Agent Session Review, session 20261124-123612-b29f). The T-007 decision is implemented exactly as the ticket specifies, the gate now covers all 6 change scripts, and the import/execution guard Qodo flagged as a Medium behavioral-complexity risk holds under every supported invocation tested. No correction needed; no missing information. Evidence covers PR #4 implementation commit 8949899 (PR head 2ff1a7b is a docs-only follow-up). Discussion #19 draft ready in day17/day17-draft.md \u2014 NOT posted (needs user GitHub account).",
+  "date": "2026-11-24",
+  "decision_investigated": "collectJsFiles() in scripts/verify.mjs now includes tickets/changes/ (Planned decision from ticket T-007), and the gate runner only runs on direct execution so tests can import the collector without starting verification.",
+  "email": {
+    "discussion": "https://github.com/orgs/qodo-hackathon/discussions/19",
+    "from": "Filip Hric at Qodo <filip.h@qodo.ai>",
+    "gmail_id": "1a20d6ec36b5d6b2",
+    "sent_wib": "2026-11-24T19:01:31+07:00"
+  },
+  "pr": {
+    "head_commit": "2ff1a7b",
+    "implementation_commit": "8949899",
+    "qodo_review": {
+      "assessed_commit": "2ff1a7b",
+      "bugs": 0,
+      "merge_risk": "Medium",
+      "noted_risk": "Behavioral complexity Medium: import vs direct execution are separate paths selected by an exact runtime identity comparison (process.argv[1] === fileURLToPath(import.meta.url)); if a supported invocation fails to distinguish them, the gate can be skipped while appearing successful.",
+      "requirement_gaps": 0,
+      "rule_violations": 0,
+      "verdict": "Great, no issues found"
+    },
+    "state": "open",
+    "title": "Day 14: gate must syntax-check ticket change scripts (T-007, factory APPROVED)",
+    "url": "https://github.com/opelphantom96/agent-factory/pull/4"
+  },
+  "source": {
+    "expectation": "npm run verify syntax-checks ticket change scripts (tickets/changes/*.mjs) \u2014 a syntax error there fails the gate",
+    "goal_passage": "the Day 9 quality gate (npm run verify) claims to syntax-check every source file but never checked ticket change scripts (tickets/changes/*.mjs) \u2014 executable code the factory runs on every ticket",
+    "ticket": "tickets/T-007-verify-change-scripts.json"
+  }
+}
