@@ -11,7 +11,7 @@
 // ctx = { samples, stats, lap }. svgExtra is injected into the speed chart,
 // htmlExtra is appended after the charts.
 
-import { generateLap } from './telemetry.js';
+import { generateLap, SAMPLE_STEP_M, LAP_LENGTH_M } from './telemetry.js';
 
 export const FEATURES = [
   // Features are added by factory tickets (T-001, T-002, T-003, ...).
@@ -114,5 +114,49 @@ FEATURES.push({
     const svg = '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="5" fill="#dc2626"/>'
       + '<text x="' + (x + 8).toFixed(1) + '" y="' + (y - 8).toFixed(1) + '" font-size="12" font-weight="bold" fill="#dc2626">TOP ' + top.speed + ' km/h</text>';
     return { svgExtra: svg };
+  },
+});
+
+export function detectBrakingZones(samples) {
+  // A braking zone is a contiguous run with brake on for >= 50 m.
+  // Each sample stands for one SAMPLE_STEP_M segment starting at its
+  // distance, so a run's true length is (last - first + step): a run of
+  // five samples covers 50 m. Measuring first-to-last sample only
+  // understates every run by one step (a 50 m run read as 40 m and was
+  // dropped; every run under 60 m of coverage was missed). endM is the
+  // true end of the last sample's segment, clamped to the lap length.
+  const zones = [];
+  let start = null;
+  for (let i = 0; i < samples.length; i++) {
+    const braking = samples[i].brake === 1;
+    if (braking && start === null) start = samples[i].distance;
+    if ((!braking || i === samples.length - 1) && start !== null) {
+      const last = braking ? samples[i].distance : samples[i - 1].distance;
+      const end = Math.min(last + SAMPLE_STEP_M, LAP_LENGTH_M);
+      if (end - start >= 50) zones.push({ startM: start, endM: end });
+      start = null;
+    }
+  }
+  return zones;
+}
+
+FEATURES.push({
+  id: 'braking-zones',
+  title: 'Braking zones',
+  render(ctx) {
+    const zones = detectBrakingZones(ctx.samples);
+    const top = ctx.yForSpeed(350);
+    const bottom = ctx.yForSpeed(0);
+    let rects = '';
+    for (const z of zones) {
+      const x1 = ctx.xFor(z.startM);
+      const x2 = ctx.xFor(z.endM);
+      const cx = (x1 + x2) / 2;
+      rects += '<rect x="' + x1.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + (x2 - x1).toFixed(1) + '" height="' + (bottom - top).toFixed(1) + '" fill="#ea580c" opacity="0.08"/>';
+      rects += '<text x="' + cx.toFixed(1) + '" y="' + (top + 14).toFixed(1) + '" text-anchor="middle" font-size="11" fill="#ea580c">BRAKE</text>';
+    }
+    const list = zones.map(function (z) { return z.startM + '–' + z.endM + ' m'; }).join(', ');
+    const html = '<section><h2>Braking zones</h2><p>' + zones.length + ' braking zone(s) detected (brake on for ≥ 50 m): ' + list + '</p></section>';
+    return { svgExtra: rects, htmlExtra: html };
   },
 });

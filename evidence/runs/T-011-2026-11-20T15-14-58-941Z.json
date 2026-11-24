@@ -1,0 +1,66 @@
+{
+  "ticket": "T-011",
+  "startedAt": "2026-11-20T15:14:53.074Z",
+  "qodo": {
+    "available": false,
+    "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+  },
+  "stages": {
+    "spec": {
+      "ok": true,
+      "errors": [],
+      "title": "Day 14 follow-up: fix Qodo's High finding on PR #5 — failed reviews still appear approved"
+    },
+    "planReview": {
+      "ok": true,
+      "rulesChecked": 5,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "plan-ok",
+          "message": "plan satisfies AGENTS.md rules (5 steps)"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "implement": {
+      "ok": true,
+      "changeScript": "tickets/changes/t-011-fix-qodo-high.mjs",
+      "changedFiles": [
+        "src/factory/index.js"
+      ],
+      "output": "applied plan-review merges Qodo findings to src/factory/index.js\napplied verdict basis from actual reviews to src/factory/index.js\napplied console summary from actual reviews to src/factory/index.js\nt-011 change script done\n"
+    },
+    "codeReview": {
+      "ok": true,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "console-log-factory",
+          "message": "console.log in factory CLI layer is intentional operator logging — not flagged (src/factory/index.js)",
+          "file": "src/factory/index.js"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo CLI not installed or not signed in — needs a Qodo account (free hackathon license)"
+      }
+    },
+    "autoFix": {
+      "fixed": [],
+      "remaining": []
+    },
+    "verify": {
+      "ok": true,
+      "output": "[verify] syntax src/demo/braking.test.js: OK\n[verify] syntax src/demo/drs.test.js: OK\n[verify] syntax src/demo/features.js: OK\n[verify] syntax src/demo/lap-compare.test.js: OK\n[verify] syntax src/demo/legend.test.js: OK\n[verify] syntax src/demo/render.js: OK\n[verify] syntax src/demo/telemetry.js: OK\n[verify] syntax src/demo/telemetry.test.js: OK\n[verify] syntax src/demo/topspeed.test.js: OK\n[verify] syntax src/factory/approval-basis.test.js: OK\n[verify] syntax src/factory/evidence.js: OK\n[verify] syntax src/factory/fixer.js: OK\n[verify] syntax src/factory/index.js: OK\n[verify] syntax src/factory/qodo.js: OK\n[verify] syntax src/factory/review-config.test.js: OK\n[verify] syntax src/factory/review.js: OK\n[verify] syntax src/factory/tickets.js: OK\n[verify] syntax scripts/automation.mjs: OK\n[verify] syntax scripts/compare-review.mjs: OK\n[verify] syntax scripts/mine-rules.mjs: OK\n[verify] syntax scripts/verify.mjs: OK\n✔ braking zones are detected where the brake is on (15.130406ms)\n✔ braking zones ignore short brake taps (0.541882ms)\n✔ a 50 m braking run is detected (one-step boundary) (1.786478ms)\n✔ a 40 m braking run is not a zone (just under the threshold) (0.323325ms)\n✔ seed 42 zones report their full covered length (5.52904ms)\n✔ braking-zones feature renders bands and a section (2.024696ms)\n✔ DRS zones are detected on the fast straights (9.408046ms)\n✔ drs-zones feature renders bands and a section (4.097424ms)\n✔ sector times add up to (almost) the lap time (6.247657ms)\n✔ lap-compare feature renders a table with deltas (64.694541ms)\n✔ legend feature renders all four entries (11.311119ms)\n✔ lap has one sample every 10 m over 5,412 m (9.785963ms)\n✔ same seed produces the same lap (deterministic) (8.644271ms)\n✔ different seeds produce different laps (4.883633ms)\n✔ speed stays in a plausible F1 range and gears match speed (1.255122ms)\n✔ lap stats are sane (1.511937ms)\n✔ dashboard HTML contains all three charts and the stats (4.75514ms)\n✔ smoke: features.js loads and exports (4.344935ms)\n✔ T-011 mode A: failed Qodo review after a healthy probe must qualify the record (525.749573ms)\n✔ T-011 mode B: a blocker from Qodo plan review must block the run (508.579798ms)\n✔ T-011 control: when both Qodo reviews actually run, no pending flag (490.047763ms)\n✔ T-011 control: Qodo CLI absent still qualifies the record (T-009 behaviour) (492.749924ms)\n✔ loadReviewConfig: reads the Day 11 setup from the repo (42.723659ms)\n✔ loadReviewConfig: null when no config file exists (0.754201ms)\n✔ default profile: generic external-url blocker, nothing product-specific (546.656599ms)\n✔ custom profile: product-specific network blocker, demo warning, explicit allows (597.458611ms)\n✔ custom profile: same code, different feedback — not a different display (1064.779666ms)\n✔ adjusted rule 1: relative local fetch is not a network violation, but file:// blocks fetch() (339.156891ms)\n✔ .pr_agent.toml mirrors the Day 11 custom setup (durable in the repo) (0.695312ms)\nℹ tests 29\nℹ suites 0\nℹ"
+    }
+  },
+  "verdict": "APPROVED",
+  "approvalBasis": "local checks only (spec, plan review, code review, verify) — Qodo review did not run at factory time and is still required on the PR",
+  "qodoReviewPending": true,
+  "demoArtifact": "apps/f1-telemetry/index.html",
+  "finishedAt": "2026-11-20T15:14:58.941Z"
+}
