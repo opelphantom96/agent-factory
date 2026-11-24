@@ -83,11 +83,17 @@ guard proven on PR #5 / PR #4; see above). Day 15 arrived 20 Nov 19:00 WIB —
 SUBMITTED the same evening (post 1 live, Discussion #17; posts 2–5
 unverified). The factory already implements the W4 theme
 (verify → approve/escalate) end-to-end; W4 will harden them per the daily
-instructions. Next challenge email: Day 17, Tue 24 Nov (~19:00 WIB).
+instructions. Next challenge email: Day 18, Wed 25 Nov (~19:00 WIB).
 Day 16 arrived 23 Nov 19:04 WIB — INCOMPLETE, blocked (Arnica org-only;
 see above). Watch first saw the Day 16 email 24 Nov 08:17 WIB; re-verified
 green the same morning (21/21, verify OK, HEAD 963c70e). Org-copy unblock
 found in Discussion #18 (see above) — needs the user's GitHub account.
+Day 17 arrived 24 Nov 19:01 WIB — COMPLETE the same evening (Agent
+Session Review for real, session 20261124-123612-b29f, PR #4 / T-007,
+conclusion ACCEPT; Qodo CLI 2.7.0 installed, skill
+qodo-agent-session-review 1.0.1; Discussion #19 draft ready, not yet
+posted — needs the user's GitHub account). Full record:
+evidence/runs/day-17-decision-check.json + day17/.
 
 ## Still needs the user
 
@@ -100,7 +106,7 @@ found in Discussion #18 (see above) — needs the user's GitHub account.
    pushed (master at 5609afa, PR #1 open for the Day 11 comparison,
    Issue #2 open for the Day 12 ticket-source check).
    The final submission needs a repo link — this is it.
-3. **Daily email (next: Day 16, Mon 23 Nov)** — Day 11 arrived 16 Nov
+3. **Daily email (next: Day 18, Wed 25 Nov)** — Day 11 arrived 16 Nov
    19:04 WIB and is done for real (see Week 3). Day 12 arrived 17 Nov
    19:23 WIB and is done — MIXED ticket-source result (see Week 3).
    Day 13 arrived 18 Nov 19:41 WIB (done on its branch). Day 14 arrived
@@ -109,6 +115,9 @@ found in Discussion #18 (see above) — needs the user's GitHub account.
    #17; posts 2–5 unverified, confirmation still waiting on the user).
    Day 16 arrived 23 Nov 19:04 WIB — INCOMPLETE, blocked (Arnica
    org-only; Discussion #18 draft ready, not yet posted).
+   Day 17 arrived 24 Nov 19:01 WIB — COMPLETE 24 Nov ~19:40 WIB
+   (Agent Session Review, PR #4 / T-007, conclusion ACCEPT;
+   Discussion #19 draft ready, not yet posted).
    Each email carries the next challenge instructions and the GitHub
    Discussion link for submitting it. The mailbox is checked daily
    ~08:17 WIB.

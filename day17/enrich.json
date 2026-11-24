@@ -1,0 +1,388 @@
+{
+  "behavior": {
+    "capabilities": [
+      {
+        "id": "gate-coverage",
+        "prs": [
+          "opelphantom96/agent-factory#4"
+        ],
+        "summary": "The quality gate syntax-checks every ticket change script before the factory can run it.",
+        "title": "Gate covers ticket change scripts"
+      }
+    ],
+    "files": [
+      {
+        "headline": "The collector now includes tickets/changes/, and the runner only executes on direct invocation.",
+        "hunks": [
+          {
+            "cap": "gate-coverage",
+            "lines": [
+              {
+                "ev": [
+                  {
+                    "from": 36,
+                    "side": "new",
+                    "to": 42
+                  }
+                ],
+                "k": "+",
+                "kind": "behavior",
+                "text": "collectJsFiles() returns JavaScript from src/, scripts/ and tickets/changes/ \u2014 26 files, all 6 change scripts."
+              },
+              {
+                "ev": [
+                  {
+                    "from": 55,
+                    "side": "new",
+                    "to": 66
+                  }
+                ],
+                "k": "~",
+                "kind": "behavior",
+                "text": "Importing verify.mjs no longer runs the gate; direct execution runs it, split by an exact argv identity check."
+              }
+            ],
+            "title": "Collector and execution guard"
+          }
+        ],
+        "path": "scripts/verify.mjs",
+        "pr": "opelphantom96/agent-factory#4"
+      },
+      {
+        "headline": "Two tests lock in the collector coverage.",
+        "hunks": [
+          {
+            "cap": "gate-coverage",
+            "lines": [
+              {
+                "ev": [
+                  {
+                    "from": 1,
+                    "side": "new",
+                    "to": 41
+                  }
+                ],
+                "k": "+",
+                "kind": "proof",
+                "text": "Tests assert the collector includes ticket change scripts while excluding node_modules and non-JavaScript files."
+              }
+            ],
+            "title": "Coverage tests"
+          }
+        ],
+        "path": "scripts/verify.test.js",
+        "pr": "opelphantom96/agent-factory#4"
+      },
+      {
+        "pr": "opelphantom96/agent-factory#4",
+        "path": "tickets/changes/t-007-verify-change-scripts.mjs",
+        "headline": "The change script that applied the fix: anchored patch plus coverage tests.",
+        "hunks": [
+          {
+            "cap": "gate-coverage",
+            "title": "Apply the collector change",
+            "lines": [
+              {
+                "k": "+",
+                "kind": "behavior",
+                "text": "The script patches verify.mjs with an anchored replace (fails loudly if the anchor moved) and writes the coverage tests, then the factory run records the result.",
+                "ev": [
+                  {
+                    "side": "new",
+                    "from": 22,
+                    "to": 29
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "headline": "A broken ticket change script now fails the quality gate before the factory runs it."
+  },
+  "context": {
+    "sources": [
+      {
+        "kind": "pr",
+        "prs": [
+          "opelphantom96/agent-factory#4"
+        ],
+        "summary": "Agent-built PR closing the Day 9 gate hole (ticket T-007, factory APPROVED). Qodo review at head 2ff1a7b: 0 bugs, 0 rule violations, 0 requirement gaps; Merge Risk Medium (behavioral complexity of the import/execution split). CI verify checks at the same head: 3x success.",
+        "title": "PR #4 \u2014 gate must syntax-check ticket change scripts",
+        "url": "https://github.com/opelphantom96/agent-factory/pull/4"
+      },
+      {
+        "kind": "ticket",
+        "prs": [
+          "opelphantom96/agent-factory#4"
+        ],
+        "summary": "Acceptance: npm run verify syntax-checks tickets/changes/*.mjs (a syntax error there fails the gate); scripts/verify.mjs exports collectJsFiles(); the gate runner only runs on direct execution; tests pass including new coverage tests.",
+        "title": "Ticket T-007 \u2014 Day 14: gate must syntax-check ticket change scripts",
+        "url": "https://github.com/opelphantom96/agent-factory/blob/day-14-guard-fix/tickets/T-007-verify-change-scripts.json"
+      }
+    ]
+  },
+  "prs": {
+    "opelphantom96/agent-factory#4": {
+      "decisions": [
+        {
+          "effects": [
+            "contract"
+          ],
+          "ev": [
+            {
+              "from": 36,
+              "path": "scripts/verify.mjs",
+              "side": "new",
+              "to": 42
+            }
+          ],
+          "id": "include-change-scripts",
+          "kind": "technical",
+          "notice": "A syntax error in any tickets/changes/*.mjs file now fails npm run verify; the failure names the file. Verified locally 24 Nov: a deliberately broken script fails node --check (exit 1) while all 6 real change scripts pass.",
+          "source": "ticket",
+          "status": "planned",
+          "text": "collectJsFiles() includes tickets/changes/*.mjs in the gate's syntax checks",
+          "why": "Ticket T-007: the gate claimed to syntax-check every source file but never checked ticket change scripts \u2014 executable code the factory runs on every ticket. The fix closes exactly that hole; before T-007 there was no collectJsFiles() at all and the gate looped only over src/ + scripts/.",
+          "plan": "npm run verify syntax-checks ticket change scripts (tickets/changes/*.mjs) \u2014 a syntax error there fails the gate"
+        },
+        {
+          "effects": [
+            "contract"
+          ],
+          "ev": [
+            {
+              "from": 52,
+              "path": "scripts/verify.mjs",
+              "side": "new",
+              "to": 66
+            }
+          ],
+          "id": "import-execution-guard",
+          "kind": "technical",
+          "notice": "Qodo flagged this as Medium behavioral complexity: if any supported invocation fails to distinguish import from direct execution, the gate can be skipped while appearing successful. Local check 24 Nov: import returns the file list without running the gate; node scripts/verify.mjs, absolute-path invocation from /tmp, and npm run verify all run the gate (exit 0). The flagged failure mode does not reproduce under any supported invocation.",
+          "source": "ticket",
+          "status": "planned",
+          "text": "The gate runner only runs on direct execution (process.argv[1] === fileURLToPath(import.meta.url)) so tests can import collectJsFiles() without starting verification",
+          "why": "Ticket T-007 acceptance requires the collector to be testable via an exported collectJsFiles(); importing the module must not execute the gate. The exact-identity comparison is the mechanism Qodo's review questioned.",
+          "plan": "scripts/verify.mjs exports collectJsFiles() and the gate runner only runs when the file is executed directly"
+        }
+      ],
+      "layers": [
+        {
+          "id": "collector-contract",
+          "ranges": [
+            {
+              "from": 36,
+              "path": "scripts/verify.mjs",
+              "side": "new",
+              "to": 42
+            },
+            {
+              "from": 1,
+              "path": "tickets/T-007-verify-change-scripts.json",
+              "side": "new",
+              "to": 19
+            }
+          ],
+          "summary": "Read the exported collector and the ticket acceptance it implements before judging the implementation.",
+          "title": "Collector contract and ticket acceptance"
+        },
+        {
+          "id": "gate-implementation",
+          "ranges": [
+            {
+              "from": 30,
+              "path": "scripts/verify.mjs",
+              "side": "new",
+              "to": 43
+            },
+            {
+              "from": 55,
+              "path": "scripts/verify.mjs",
+              "side": "new",
+              "to": 66
+            },
+            {
+              "from": 1,
+              "path": "tickets/changes/t-007-verify-change-scripts.mjs",
+              "side": "new",
+              "to": 147
+            }
+          ],
+          "summary": "The collector change, the import/execution guard, and the change script that applied them.",
+          "title": "Gate implementation and change script"
+        },
+        {
+          "id": "coverage-tests",
+          "ranges": [
+            {
+              "from": 1,
+              "path": "scripts/verify.test.js",
+              "side": "new",
+              "to": 41
+            }
+          ],
+          "summary": "The tests that lock the new coverage in place.",
+          "title": "Coverage tests"
+        },
+        {
+          "id": "records",
+          "title": "Docs and evidence records",
+          "summary": "Skim: the ticket definition, run record, workflow note and doc updates that record this change. No behavior lives here.",
+          "ranges": [
+            {
+              "path": "tickets/T-007-verify-change-scripts.json",
+              "from": 1,
+              "to": 19,
+              "side": "new"
+            },
+            {
+              "path": "evidence/runs/T-007-2026-11-20T13-27-15-878Z.json",
+              "from": 1,
+              "to": 64,
+              "side": "new"
+            },
+            {
+              "path": "review/workflow-day-14.md",
+              "from": 1,
+              "to": 149,
+              "side": "new"
+            },
+            {
+              "path": "docs/ARCHITECTURE.md",
+              "from": 26,
+              "to": 33,
+              "side": "new"
+            },
+            {
+              "path": "docs/CHALLENGES.md",
+              "from": 47,
+              "to": 49,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 8,
+              "to": 11,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 15,
+              "to": 18,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 60,
+              "to": 60,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 68,
+              "to": 69,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 72,
+              "to": 73,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 78,
+              "to": 80,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 95,
+              "to": 95,
+              "side": "new"
+            },
+            {
+              "path": "evidence/EVIDENCE.md",
+              "from": 98,
+              "to": 100,
+              "side": "new"
+            }
+          ]
+        }
+      ],
+      "quality": {
+        "summary": "Full suite 21/21 pass and npm run verify green at repo HEAD d8b526d (24 Nov). CI verify checks at PR head 2ff1a7b: 3x success. Qodo review at head 2ff1a7b: 0 bugs, 0 rule violations, 0 requirement gaps. Annotations section was unavailable in this session (MT-VALIDATION) \u2014 no annotation evidence either way.",
+        "tests": [
+          {
+            "path": "scripts/verify.test.js",
+            "verdict": "fine",
+            "why": "2 tests assert the collector includes change scripts and excludes node_modules and non-JavaScript files; they pass in the 21/21 suite. Kept here because the tests are the proof that the new coverage holds."
+          }
+        ]
+      },
+      "risk": "Medium (Qodo): blast radius medium \u2014 one bounded verification workflow; damage medium \u2014 a skipped gate could record false verification. Locally tested: the guard holds under every supported invocation, so the flagged failure mode does not reproduce.",
+      "summary": "Close the Day 9 quality-gate hole: the gate now syntax-checks the executable ticket change scripts it previously skipped, with the collector exported so tests can lock the coverage in."
+    }
+  },
+  "story": [
+    {
+      "id": "brief",
+      "kind": "brief",
+      "lede": "The gate claimed to check every source file but skipped the executable scripts the factory runs on every ticket; now it checks them.",
+      "paragraphs": [
+        {
+          "label": "Today",
+          "text": "npm run verify syntax-checks src/ and scripts/ only. A syntax error in tickets/changes/*.mjs escapes the gate and is caught only when the factory tries to run the script."
+        },
+        {
+          "label": "Why",
+          "text": "Change scripts are executable code the factory runs on every ticket; a broken one failing late wastes a factory run and can leave a ticket half-applied."
+        },
+        {
+          "label": "What",
+          "text": "collectJsFiles() now includes tickets/changes/ (26 files gated, all 6 change scripts), is exported for tests, and the gate runner only executes on direct invocation."
+        },
+        {
+          "label": "How",
+          "text": "One exported collector plus an exact-identity import/execution guard; two coverage tests lock the new file list in."
+        }
+      ],
+      "title": "Close the gate hole for ticket change scripts"
+    },
+    {
+      "id": "flow",
+      "kind": "flow",
+      "lede": "No request or record crosses components in this change; it is a single local gate widening.",
+      "skip": "Only the local verification gate changes. No caller, service or data flow is involved."
+    },
+    {
+      "id": "guard-question",
+      "kind": "question",
+      "lede": "Qodo's review flags the import/execution split as Medium behavioral complexity \u2014 the one decision that needs a human call.",
+      "options": [
+        "Accept the guard: local checks show every supported invocation distinguishes import from execution correctly",
+        "Request a correction: replace the argv identity check with a more robust mechanism"
+      ],
+      "title": "Accept the import/execution guard?"
+    },
+    {
+      "id": "coverage-gap",
+      "kind": "notice",
+      "lede": "Two collection caveats are recorded, neither blocking the investigation.",
+      "paragraphs": [
+        {
+          "label": "Annotations",
+          "text": "The annotations review-data section was unavailable in this session (MT-VALIDATION); there is no annotation evidence either way. Files, comments, reviews, checks, readiness and history all collected completely."
+        },
+        {
+          "label": "Transient collect failure",
+          "text": "The first two collect attempts failed with codebase/read-review-data: invalid_token right after CLI login; the third attempt collected the session completely. The token issue was transient, not a permissions denial."
+        }
+      ],
+      "title": "Collection caveats"
+    }
+  ]
+}
