@@ -6,8 +6,8 @@ to https://github.com/opelphantom96/agent-factory, branch master).
 **Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
 "You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
 **Status at last update:** 25 Nov 2026 ~03:50 WIB (master, Day 13–17 merged).
-`npm run verify` green after the merges (44/44 tests after the Day 14 merge;
-re-verified after the Day 16–17 merge — see verify output). Day 11–17 done
+`npm run verify` green after the merges (46/46 tests after the Day 16–17
+merge). Day 11–17 done
 (see Week 3/4 below): Day 14 COMPLETE (workflow + guard live, Discussion #16
 submitted); Day 15 submitted (X thread, posts 2–5 unverified); Day 16
 INCOMPLETE (Arnica org-only block, Discussion #18 posted 23 Nov);
