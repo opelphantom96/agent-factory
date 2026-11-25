@@ -19,13 +19,20 @@ export const FEATURES = [
 
 export function detectDrsZones(samples) {
   // A DRS zone is a contiguous run at >= 300 km/h for >= 250 m.
+  // Each sample stands for one SAMPLE_STEP_M segment starting at its
+  // distance, so a run's true length is (last - first + step): a run of
+  // 25 samples covers 250 m. Measuring first-to-last sample only
+  // understates every run by one step (a 250 m run read as 240 m and was
+  // dropped; every run under 260 m of coverage was missed). endM is the
+  // true end of the last sample's segment, clamped to the lap length.
   const zones = [];
   let start = null;
   for (let i = 0; i < samples.length; i++) {
     const fast = samples[i].speed >= 300;
     if (fast && start === null) start = samples[i].distance;
     if ((!fast || i === samples.length - 1) && start !== null) {
-      const end = fast ? samples[i].distance : samples[i - 1].distance;
+      const last = fast ? samples[i].distance : samples[i - 1].distance;
+      const end = Math.min(last + SAMPLE_STEP_M, LAP_LENGTH_M);
       if (end - start >= 250) zones.push({ startM: start, endM: end });
       start = null;
     }
