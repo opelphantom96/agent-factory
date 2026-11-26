@@ -7,9 +7,11 @@
 - Discussion: https://github.com/orgs/qodo-hackathon/discussions/20
   ("Day 19: What is your factory learning?")
 - Repo: https://github.com/opelphantom96/agent-factory (public, personal account)
-- Outcome: **Work complete except the PR + Qodo review + merge.**
-  Question asked and answered from the real review records, one
-  evidence-based improvement built and tested (59/59, verify green),
+- Outcome: **Work complete except merge + this post.** PR #7 created
+  26 Nov 19:58 WIB; Qodo reviewed it ~20:00 WIB with 4 Medium findings;
+  the fix is in progress on this branch (merge only after Qodo
+  re-review). Question asked and answered from the real review records,
+  one evidence-based improvement built and tested (70/70, verify green),
   factory escalated 3× on process grounds (2 false positives +
   1 already-applied re-run) — human decision 19:57 WIB: proceed to
   PR with local approval basis, Qodo review on the PR, then merge.
@@ -76,23 +78,30 @@ worktree, idempotent rerun OK).
 (HEAD) it returns 0 span-undercount findings. The rule would have
 caught the T-010 defect at review time.
 
-**Checks:** local `npm test` **59 pass / 0 fail** (48 baseline + 11
-new: 8 rule tests + 3 regression tests), `npm run verify` green,
-re-verified 26 Nov ~20:00 WIB on the branch. `checkSpanUndercount`
-over all current `src/demo/*.js` files: clean (both detectors fixed,
-`sectorTimes` untouched — no false positives on the existing code).
-No gate weakened, nothing under `scripts/**` touched. Qodo review
-did NOT run at factory time (Qodo CLI 2.7.0 present, but the `qodo
-review` commands failed in both factory runs; approval basis is local
-checks only, `qodoReviewPending=true`) — Qodo review on the PR is
-still required, per the T-009/T-011 pattern.
+**Checks:** local `npm test` **70 pass / 0 fail** (48 baseline + 22 new:
+11 T-012 + 11 PR #7 follow-up: comment-blindness, parenthesized/named
+spans, single-pass extraction), `npm run verify` green, re-verified
+26 Nov ~20:10 WIB on the branch after the PR #7 fix. The change script
+(`tickets/changes/t-012-span-undercount-check.mjs`) was regenerated to
+reproduce the hardened rule byte-for-byte from pre-T-012 HEAD (replay
+verified in a scratch worktree, idempotent rerun OK).
+`checkSpanUndercount` over all current `src/demo/*.js` files: clean
+(both detectors fixed, `sectorTimes` untouched — no false positives on
+the existing code). No gate weakened, nothing under `scripts/**`
+touched. Qodo review did NOT run at factory time (Qodo CLI 2.7.0
+present, but the `qodo review` commands failed in all three factory
+runs; approval basis is local checks only, `qodoReviewPending=true`)
+— Qodo reviewed PR #7 instead (~20:00 WIB, 4 Medium findings; the fix
+is in progress, re-review required before merge, per the T-009/T-011
+pattern).
 
 ## Factory gate — escalated twice (honest record)
 
 The factory run on T-012 escalated **twice**, both times on
 false-positive blockers from its own `FORBIDDEN_IN_DIFF` check — and
 per AGENTS.md rule 5 (escalate after 2 gate failures) no third run
-was attempted; a human decides the next step.
+was attempted at that point; a human decided the next step (see Run 3
+below).
 
 - **Run 1** (`evidence/runs/T-012-2026-11-26T12-52-23-981Z.json`):
   `eval-call` + `function-constructor` blockers on
@@ -127,8 +136,8 @@ Full record: `day19/day-19-analytics.json` + `evidence/runs/T-012-…`.
 
 - Whether Qodo Analytics is reachable for trial participants, and
   whether its counts agree with this 6-finding sample.
-- Whether Qodo's review of the new PR agrees the warning rule is
-  useful or flags anything in it.
+- Whether Qodo's re-review of PR #7 clears the 4 findings from its
+  first review (fix in progress).
 - Nothing else on the factory side: run 3 was authorized and
   escalated on already-applied + Qodo-CLI-unavailable; the human
   decision is to proceed to PR (no 4th run).
@@ -136,5 +145,5 @@ Full record: `day19/day-19-analytics.json` + `evidence/runs/T-012-…`.
 Status (COMPLETE or INCOMPLETE) and reason: **INCOMPLETE on process,
 COMPLETE on substance** — the question is answered from evidence, the
 improvement is built, tested and verified locally, but the factory
-gate escalated twice and the PR + Qodo review + this post are still
-pending a human decision and a browser session.
+gate escalated 3×; PR #7 was created and Qodo reviewed it (4 Medium
+findings, fix in progress); merge + this post are still pending.

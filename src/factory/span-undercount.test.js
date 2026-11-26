@@ -15,7 +15,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
-import { checkSpanUndercount, reviewDiff } from './review.js';
+import { checkSpanUndercount, extractFunctions, reviewDiff, stripComments } from './review.js';
 
 const PRE_FIX_DRS = `export function detectDrsZones(samples) {
   // A DRS zone is a contiguous run at >= 300 km/h for >= 250 m.
@@ -218,4 +218,204 @@ test('reviewDiff still flags a real dynamic Function-constructor call (check not
   const hit = findings.filter((f) => f.type === 'function-constructor');
   assert.equal(hit.length, 1);
   assert.equal(hit[0].severity, 'blocker');
+});
+
+// ── PR #7 follow-up (Qodo review on the T-012 PR) ────────────────────
+// Qodo found 4 issues in the rule as first shipped. The fixtures below
+// reproduce them; the fixes are in review.js (comment stripping, wider
+// span pattern, single-pass extraction).
+
+// Finding 1 — the step was reverted from the end calculation but the
+// explanatory comment still mentions SAMPLE_STEP_M. The comment must not
+// stand in for the code.
+const COMMENT_ONLY_STEP_DRS = `export function detectDrsZones(samples) {
+  // A DRS zone is a contiguous run at >= 300 km/h for >= 250 m.
+  // Each sample stands for one SAMPLE_STEP_M segment starting at its
+  // distance, so a run's true length is (last - first + step).
+  const zones = [];
+  let start = null;
+  for (let i = 0; i < samples.length; i++) {
+    const fast = samples[i].speed >= 300;
+    if (fast && start === null) start = samples[i].distance;
+    if ((!fast || i === samples.length - 1) && start !== null) {
+      const end = samples[i].distance;
+      if (end - start >= 250) zones.push({ startM: start, endM: end });
+      start = null;
+    }
+  }
+  return zones;
+}
+`;
+
+// Finding 1, other side — a span comparison that exists only in comments
+// (line + block) must NOT be flagged.
+const COMMENT_ONLY_COMPARISON = `export function detectZones(samples) {
+  // Old check was: if (end - start >= 250) zones.push({ startM: start, endM: end });
+  /* Blocked form: (end - start) >= MIN_ZONE_M — replaced below. */
+  const zones = [];
+  let end = 0;
+  for (const s of samples) end = Math.max(end, s.distance);
+  return zones;
+}
+`;
+
+// Finding 2 — equivalent span comparisons the first pattern missed:
+// parenthesized subtraction, named threshold, both at once.
+const PAREN_SPAN = `export function detectZones(samples) {
+  const zones = [];
+  let start = null;
+  for (let i = 0; i < samples.length; i++) {
+    if (samples[i].fast && start === null) start = samples[i].distance;
+    if (!samples[i].fast && start !== null) {
+      const end = samples[i - 1].distance;
+      if ((end - start) >= 250) zones.push({ startM: start, endM: end });
+      start = null;
+    }
+  }
+  return zones;
+}
+`;
+
+const NAMED_THRESHOLD_SPAN = `export function detectZones(samples) {
+  const zones = [];
+  let start = null;
+  for (let i = 0; i < samples.length; i++) {
+    if (samples[i].fast && start === null) start = samples[i].distance;
+    if (!samples[i].fast && start !== null) {
+      const end = samples[i - 1].distance;
+      if (end - start >= MIN_ZONE_M) zones.push({ startM: start, endM: end });
+      start = null;
+    }
+  }
+  return zones;
+}
+`;
+
+const PAREN_NAMED_SPAN = `export function detectZones(samples) {
+  const zones = [];
+  let start = null;
+  for (let i = 0; i < samples.length; i++) {
+    if (samples[i].fast && start === null) start = samples[i].distance;
+    if (!samples[i].fast && start !== null) {
+      const last = samples[i - 1].distance;
+      if ((last - start) >= ZONE_MIN_M) zones.push({ startM: start, endM: last });
+      start = null;
+    }
+  }
+  return zones;
+}
+`;
+
+// Finding 2, other side — parenthesized + named threshold WITH the step
+// added in code is the corrected form and must stay clean.
+const PAREN_NAMED_FIXED = `export function detectZones(samples) {
+  const zones = [];
+  let start = null;
+  for (let i = 0; i < samples.length; i++) {
+    if (samples[i].fast && start === null) start = samples[i].distance;
+    if (!samples[i].fast && start !== null) {
+      const last = samples[i - 1].distance;
+      const end = Math.min(last + SAMPLE_STEP_M, LAP_LENGTH_M);
+      if ((end - start) >= MIN_ZONE_M) zones.push({ startM: start, endM: end });
+      start = null;
+    }
+  }
+  return zones;
+}
+`;
+
+test('PR #7 finding 1: step only in a comment does not suppress the warning', () => {
+  const findings = checkSpanUndercount(COMMENT_ONLY_STEP_DRS);
+  assert.equal(findings.length, 1);
+  assert.equal(findings[0].type, 'span-undercount');
+  assert.equal(findings[0].function, 'detectDrsZones');
+});
+
+test('PR #7 finding 1: comparison only in comments is not flagged', () => {
+  assert.deepEqual(checkSpanUndercount(COMMENT_ONLY_COMPARISON), []);
+});
+
+test('PR #7 finding 2: parenthesized span comparison is flagged', () => {
+  const findings = checkSpanUndercount(PAREN_SPAN);
+  assert.equal(findings.length, 1);
+  assert.equal(findings[0].type, 'span-undercount');
+});
+
+test('PR #7 finding 2: named-threshold span comparison is flagged', () => {
+  const findings = checkSpanUndercount(NAMED_THRESHOLD_SPAN);
+  assert.equal(findings.length, 1);
+  assert.equal(findings[0].type, 'span-undercount');
+});
+
+test('PR #7 finding 2: parenthesized + named-threshold span is flagged', () => {
+  const findings = checkSpanUndercount(PAREN_NAMED_SPAN);
+  assert.equal(findings.length, 1);
+  assert.equal(findings[0].type, 'span-undercount');
+});
+
+test('PR #7 finding 2: parenthesized + named span with the step added is clean', () => {
+  assert.deepEqual(checkSpanUndercount(PAREN_NAMED_FIXED), []);
+});
+
+// Finding 3 — the extractor must handle nested declarations without
+// rescanning overlapping bodies. These pin the behaviour the single-pass
+// rewrite must preserve (extraction order, bodies, span detection).
+test('PR #7 finding 3: deeply nested declarations extract in order', () => {
+  const depth = 60;
+  let src = '';
+  for (let i = 0; i < depth; i++) src += `function f${i}() {\n`;
+  src += '  return 1;\n';
+  for (let i = depth - 1; i >= 0; i--) src += '}\n';
+  const fns = extractFunctions(src);
+  assert.equal(fns.length, depth);
+  assert.deepEqual(fns.map((f) => f.name), Array.from({ length: depth }, (_, i) => `f${i}`));
+  assert.match(fns[depth - 1].body, /return 1;/);
+  assert.match(fns[0].body, /function f59/);
+});
+
+test('PR #7 finding 3: many top-level functions extract', () => {
+  let src = '';
+  for (let i = 0; i < 500; i++) src += `function g${i}() { return ${i}; }\n`;
+  const fns = extractFunctions(src);
+  assert.equal(fns.length, 500);
+  assert.equal(fns[499].name, 'g499');
+  assert.match(fns[499].body, /return 499;/);
+});
+
+test('PR #7 finding 3: body brace is taken after a default object parameter', () => {
+  const fns = extractFunctions('function f(o = {}) { return o; }\n');
+  assert.equal(fns.length, 1);
+  assert.match(fns[0].body, /return o;/);
+});
+
+test('PR #7 finding 3: span pattern in a nested detector is still flagged', () => {
+  const src = `export function outer(samples) {
+  function inner(samples) {
+    const end = samples[1].distance;
+    const start = samples[0].distance;
+    if (end - start >= 250) return true;
+    return false;
+  }
+  return inner(samples);
+}
+`;
+  const findings = checkSpanUndercount(src);
+  assert.equal(findings.length, 2);
+  assert.deepEqual(findings.map((f) => f.function).sort(), ['inner', 'outer']);
+});
+
+test('PR #7 finding 1: stripComments removes line and block comments, keeps strings', () => {
+  const src = `const a = 1; // trailing SAMPLE_STEP_M
+/* block
+   SAMPLE_STEP_M */
+const path = 'a // b'; // end - start >= 250
+const b = 2;
+`;
+  const stripped = stripComments(src);
+  assert.ok(!stripped.includes('SAMPLE_STEP_M'));
+  assert.ok(!stripped.includes('end - start'));
+  assert.ok(stripped.includes("'a // b'"));
+  assert.equal(stripped.split('\n').length, src.split('\n').length);
+  assert.ok(stripped.includes('const a = 1;'));
+  assert.ok(stripped.includes('const b = 2;'));
 });
