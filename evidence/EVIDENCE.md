@@ -5,13 +5,16 @@
 to https://github.com/opelphantom96/agent-factory, branch master).
 **Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
 "You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
-**Status at last update:** 25 Nov 2026 ~03:50 WIB (master, Day 13–17 merged).
-`npm run verify` green after the merges (46/46 tests after the Day 16–17
-merge). Day 11–17 done
+**Status at last update:** 26 Nov 2026 ~08:20 WIB (branch
+`day-18-drs-boundary`, Day 18 done; master still at Day 16–17 merge).
+`npm run verify` green (48/48 tests after the Day 18 fix, re-verified
+26 Nov 08:18 WIB at HEAD `358bbd4`). Day 11–18 done
 (see Week 3/4 below): Day 14 COMPLETE (workflow + guard live, Discussion #16
 submitted); Day 15 submitted (X thread, posts 2–5 unverified); Day 16
 INCOMPLETE (Arnica org-only block, Discussion #18 posted 23 Nov);
-Day 17 ACCEPT (Discussion #19 posted 24 Nov 21:07 WIB). Qodo account signed
+Day 17 ACCEPT (Discussion #19 posted 24 Nov 21:07 WIB); Day 18 COMPLETE
+(red build → Qodo feedback → fix → follow-up runs green, Qodo re-review
+0 bugs; Discussion #20 draft ready, not yet posted). Qodo account signed
 in, repo connected to Qodo.
 
 ## How to read this log
@@ -72,8 +75,8 @@ in, repo connected to Qodo.
 | Day 16 (23 Nov) | **Scan your repo with Arnica** (email 23 Nov 19:04 WIB, Gmail id `1a2084acce60ed28`) | ⚠️ **INCOMPLETE — blocked before any scan.** Arnica GitHub guide (docs.arnica.io, verified 23 Nov): "Arnica supports an integration with organization accounts only. It means that integrations with personal accounts are prohibited." Installation step 4 ("Select the applicable organization") cannot be completed for a personal repo; "Only organization owners are able to install GitHub Apps." Repo: personal account opelphantom96/agent-factory, branch master, HEAD 2ff1a7b. No Arnica scan ran, so there are no findings to investigate and nothing was fabricated. Local diligence instead (23 Nov): `npm test` 21/21 pass, `npm run verify` green (tests OK + demo rebuild OK), secret-pattern grep over the repo clean (only hits are the factory's own `SECRET_PATTERNS` detector in `src/factory/review.js` and the words "secrets in code" in ticket T-005/config), zero runtime dependencies, CI pins actions/checkout@v4 + setup-node@v4. Diagram: `day15/factory-diagram.png` updated with an Arnica step marked BLOCKED/planned (script `day15/make-diagram.py`). Submission: Discussion #18 posted 23 Nov (INCOMPLETE/Arnica-blocked; comment 19834628). Unblock path: move the repo into a GitHub organization the user owns, or an Arnica exception for personal accounts. **Update 24 Nov:** a participant's public post in Discussion #18 (CamDuncalfe, read 24 Nov) proves a better unblock — create a FREE GitHub org, push a PRIVATE copy of `main` at the same commit into it, install Arnica on the org and scan the copy; the entry repo stays personal. Their scan completed 23 Nov (3 findings: 2 Medium actions-artipacked + 1 Low integrity hash), both Mediums fixed, Arnica auto-resolved them. Needs the user's GitHub account (org creation + push) — not done from here. Re-verified 24 Nov ~08:25 WIB at HEAD 963c70e: `npm test` 21/21 pass, `npm run verify` green (tests OK + demo rebuild OK). |
 
 Final dashboard: `apps/f1-telemetry/index.html` — verified to contain DRS
-zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **46/46
-pass** after the Day 16–17 merge (`npm test`, re-verified 25 Nov ~03:50 WIB).
+zones, Lap comparison, Legend, and "TOP 328.3 km/h". Test suite: **48/48
+pass** after the Day 18 fix (`npm test`, re-verified 26 Nov ~08:18 WIB).
 
 ## Week 3–4 + finale (16 Nov – 2 Dec)
 
@@ -96,6 +99,19 @@ conclusion ACCEPT; Qodo CLI 2.7.0 installed, skill
 qodo-agent-session-review 1.0.1; Discussion #19 draft ready, not yet
 posted — needs the user's GitHub account). Full record:
 evidence/runs/day-17-decision-check.json + day17/.
+Day 18 arrived 25 Nov 19:21 WIB — COMPLETE the same evening (test-first
+red build on PR #6, commit 0381cf9, failed job `verify` 139252440655;
+`/checks` deprecated 1 Oct 2026, so Qodo's auto review supplied the
+feedback instead — 2 findings, both verified against source; diagnosis:
+one-step undercount in `detectDrsZones`, same as T-009; fix commit
+358bbd4; follow-up runs 45628730038 + 45628721403 both success; local
+48/48 + verify green, re-verified 26 Nov 08:18 WIB; Qodo re-review 0
+bugs, both findings ✓ Resolved, verified live 26 Nov 08:19 WIB).
+Caveats: CI raw log never read verbatim (GitHub API 403 without token);
+PR #6 merged 26 Nov (merge commit be76110); Discussion #20 draft ready, not yet posted —
+needs the user's GitHub account. Full record:
+evidence/runs/day-18-ci-feedback.json + day18/ (incl.
+qodo-feedback-pr6.md verbatim + day18-draft.md).
 
 ## Still needs the user
 
@@ -108,7 +124,7 @@ evidence/runs/day-17-decision-check.json + day17/.
    pushed (master at 5609afa, PR #1 open for the Day 11 comparison,
    Issue #2 open for the Day 12 ticket-source check).
    The final submission needs a repo link — this is it.
-3. **Daily email (next: Day 18, Wed 25 Nov)** — Day 11 arrived 16 Nov
+3. **Daily email (next: Day 19, Thu 26 Nov)** — Day 11 arrived 16 Nov
    19:04 WIB and is done for real (see Week 3). Day 12 arrived 17 Nov
    19:23 WIB and is done — MIXED ticket-source result (see Week 3).
    Day 13 arrived 18 Nov 19:41 WIB and is done — skill + fresh-session
@@ -120,7 +136,10 @@ evidence/runs/day-17-decision-check.json + day17/.
    23 Nov, comment 19834628). Day 17 arrived 24 Nov 19:01 WIB —
    COMPLETE 24 Nov ~19:40 WIB (Agent Session Review, PR #4 / T-007,
    conclusion ACCEPT; Discussion #19 posted 24 Nov 21:07 WIB, comment
-   19859639).
+   19859639). Day 18 arrived 25 Nov 19:21 WIB — COMPLETE 25 Nov ~21:00
+   WIB (red build → Qodo feedback → T-010 fix → follow-up runs green,
+   Qodo re-review 0 bugs; PR #6 open, Discussion #20 draft ready, not
+   yet posted).
    Each email carries the next challenge instructions and the GitHub
    Discussion link for submitting it. The mailbox is checked daily
    ~08:17 WIB.
