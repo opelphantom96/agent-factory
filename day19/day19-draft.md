@@ -7,12 +7,12 @@
 - Discussion: https://github.com/orgs/qodo-hackathon/discussions/20
   ("Day 19: What is your factory learning?")
 - Repo: https://github.com/opelphantom96/agent-factory (public, personal account)
-- Outcome: **Work complete except the factory gate and the PR.**
+- Outcome: **Work complete except the PR + Qodo review + merge.**
   Question asked and answered from the real review records, one
   evidence-based improvement built and tested (59/59, verify green),
-  but the factory escalated twice on false-positive blockers and a
-  third run needs a human decision (AGENTS.md rule 5). The PR is not
-  created yet, so Qodo has not reviewed the change on a PR.
+  factory escalated 3× on process grounds (2 false positives +
+  1 already-applied re-run) — human decision 19:57 WIB: proceed to
+  PR with local approval basis, Qodo review on the PR, then merge.
 
 ## Question and scope
 
@@ -109,6 +109,17 @@ was attempted; a human decides the next step.
   verify green, literal scan clean). Both ESCALATED records stay in
   `evidence/runs/` as history; nothing was edited to make a run
   green.
+- **Run 3 — authorized by the human, 26 Nov ~19:57 WIB**
+  (`evidence/runs/T-012-2026-11-26T12-57-26-623Z.json`): ticket
+  set back to `ready` for the re-run. Verdict ESCALATED again, but
+  NOT on a defect: implement changed 0 files because the change was
+  already applied (idempotent skip → implement `ok: false`), all
+  other stages green (plan review, code review, verify). Qodo CLI
+  review failed again at plan + diff stages. Human decision: no
+  4th run — it would repeat the same 0-change escalation. Substance
+  is complete and locally verified; proceed to PR with local
+  approval basis and get Qodo's review on the PR itself (the
+  T-009/T-011 pattern), then merge, then post this.
 
 Full record: `day19/day-19-analytics.json` + `evidence/runs/T-012-…`.
 
@@ -118,7 +129,9 @@ Full record: `day19/day-19-analytics.json` + `evidence/runs/T-012-…`.
   whether its counts agree with this 6-finding sample.
 - Whether Qodo's review of the new PR agrees the warning rule is
   useful or flags anything in it.
-- The third factory run / merge decision after the two escalations.
+- Nothing else on the factory side: run 3 was authorized and
+  escalated on already-applied + Qodo-CLI-unavailable; the human
+  decision is to proceed to PR (no 4th run).
 
 Status (COMPLETE or INCOMPLETE) and reason: **INCOMPLETE on process,
 COMPLETE on substance** — the question is answered from evidence, the

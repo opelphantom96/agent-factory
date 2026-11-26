@@ -1,0 +1,63 @@
+{
+  "ticket": "T-012",
+  "startedAt": "2026-11-26T12:57:07.225Z",
+  "qodo": {
+    "available": true,
+    "version": "2.7.0"
+  },
+  "stages": {
+    "spec": {
+      "ok": true,
+      "errors": [],
+      "title": "Day 19: add a span-undercount check to the local reviewer"
+    },
+    "planReview": {
+      "ok": true,
+      "rulesChecked": 5,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "plan-ok",
+          "message": "plan satisfies AGENTS.md rules (5 steps)"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo review failed (plan): Command failed: qodo review /home/hatch/workspace/qodo-hackathon/agent-factory/tickets/T-012-span-undercount-check.json\n  trace bd81b288252b09306a23afe5fe16dd62\n"
+      }
+    },
+    "implement": {
+      "ok": false,
+      "changeScript": "tickets/changes/t-012-span-undercount-check.mjs",
+      "changedFiles": [],
+      "output": "skip span-undercount rule: already applied\nskip reviewDiff hook: already applied\nskip forbidden-message reword: already applied\nskip span-undercount tests: already present, identical\n"
+    },
+    "codeReview": {
+      "ok": true,
+      "findings": [
+        {
+          "severity": "info",
+          "type": "diff-ok",
+          "message": "0 file(s) changed, no blocking findings"
+        }
+      ],
+      "qodo": {
+        "available": false,
+        "reason": "qodo review failed (diff): Command failed: qodo review /home/hatch/workspace/qodo-hackathon/agent-factory/tickets/T-012-span-undercount-check.json\n  trace 93f50c9412d3d67c2cadd75be38cb3bb\n"
+      }
+    },
+    "autoFix": {
+      "fixed": [],
+      "remaining": []
+    },
+    "verify": {
+      "ok": true,
+      "output": "[verify] syntax src/demo/braking.test.js: OK\n[verify] syntax src/demo/drs.test.js: OK\n[verify] syntax src/demo/features.js: OK\n[verify] syntax src/demo/lap-compare.test.js: OK\n[verify] syntax src/demo/legend.test.js: OK\n[verify] syntax src/demo/render.js: OK\n[verify] syntax src/demo/telemetry.js: OK\n[verify] syntax src/demo/telemetry.test.js: OK\n[verify] syntax src/demo/topspeed.test.js: OK\n[verify] syntax src/factory/approval-basis.test.js: OK\n[verify] syntax src/factory/evidence.js: OK\n[verify] syntax src/factory/fixer.js: OK\n[verify] syntax src/factory/index.js: OK\n[verify] syntax src/factory/qodo.js: OK\n[verify] syntax src/factory/review-config.test.js: OK\n[verify] syntax src/factory/review.js: OK\n[verify] syntax src/factory/span-undercount.test.js: OK\n[verify] syntax src/factory/tickets.js: OK\n[verify] syntax scripts/automation.mjs: OK\n[verify] syntax scripts/compare-review.mjs: OK\n[verify] syntax scripts/evidence-log-check.mjs: OK\n[verify] syntax scripts/evidence-log-check.test.js: OK\n[verify] syntax scripts/mine-rules.mjs: OK\n[verify] syntax scripts/verify.mjs: OK\n[verify] syntax scripts/verify.test.js: OK\n[verify] syntax tickets/changes/t-001-drs-zones.mjs: OK\n[verify] syntax tickets/changes/t-002-lap-compare.mjs: OK\n[verify] syntax tickets/changes/t-003-legend.mjs: OK\n[verify] syntax tickets/changes/t-004-topspeed.mjs: OK\n[verify] syntax tickets/changes/t-005-review-config.mjs: OK\n[verify] syntax tickets/changes/t-006-evidence-log-check.mjs: OK\n[verify] syntax tickets/changes/t-007-verify-change-scripts.mjs: OK\n[verify] syntax tickets/changes/t-008-braking-zones.mjs: OK\n[verify] syntax tickets/changes/t-009-fix-qodo-mediums.mjs: OK\n[verify] syntax tickets/changes/t-011-fix-qodo-high.mjs: OK\n[verify] syntax tickets/changes/t-012-span-undercount-check.mjs: OK\n✔ valid run record passes every check (1.926571ms)\n✔ missing stage fails stages-present and verdict-consistent (0.363726ms)\n✔ auto-fix success (T-004 shape) is consistent with APPROVED (0.247181ms)\n✔ auto-fix with remaining findings fails verdict-consistent (0.365879ms)\n✔ APPROVED with a failing stage fails verdict-consistent (0.167772ms)\n✔ ESCALATED with a failing stage is consistent (0.365348ms)\n✔ filename and ticket mismatch fails (0.15382ms)\n✔ ticket missing from EVIDENCE.md fails logged-in-evidence-md (0.210306ms)\n✔ day-11-style record is other evidence, not a failed run (0.357456ms)\n✔ checkEvidenceLog passes on a healthy fixture (2.244078ms)\n✔ checkEvidenceLog fails on a missing stage (two checks) and on unparseable JSON (0.846701ms)\n✔ ticket with no run record is reported (2.643637ms)\n✔ missing runs directory throws (1.801554ms)\n✔ verdict line uses the singular for one failure (0.216836ms)\n✔ verdict line for a pass names the record count (0.086019ms)\n✔ collectJsFiles includes ticket change scripts (60.452461ms)\n✔ collectJsFiles skips node_modules and non-JS files (1.047732ms)\n✔ braking zones are detected where the brake is on (9.690713ms)\n✔ braking zones ignore short brake taps"
+    }
+  },
+  "verdict": "ESCALATED",
+  "approvalBasis": "local checks only (spec, plan review, code review, verify) — Qodo review did not run at factory time and is still required on the PR (plan review: qodo review failed (plan): Command failed: qodo review /home/hatch/workspace/qodo-hackathon/agent-factory/tickets/T-012-span-undercount-check.json\n  trace bd81b288252b09306a23afe5fe16dd62\n; code review: qodo review failed (diff): Command failed: qodo review /home/hatch/workspace/qodo-hackathon/agent-factory/tickets/T-012-span-undercount-check.json\n  trace 93f50c9412d3d67c2cadd75be38cb3bb\n)",
+  "qodoReviewPending": true,
+  "demoArtifact": "apps/f1-telemetry/index.html",
+  "finishedAt": "2026-11-26T12:57:26.622Z"
+}
