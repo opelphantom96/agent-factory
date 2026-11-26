@@ -5,17 +5,22 @@
 to https://github.com/opelphantom96/agent-factory, branch master).
 **Registered:** 14 Nov 2026, email andibugil94@gmail.com (confirmation:
 "You're in!", info@qodo.ai, 14 Nov 18:12 WIB).
-**Status at last update:** 26 Nov 2026 ~08:20 WIB (branch
-`day-18-drs-boundary`, Day 18 done; master still at Day 16–17 merge).
-`npm run verify` green (48/48 tests after the Day 18 fix, re-verified
-26 Nov 08:18 WIB at HEAD `358bbd4`). Day 11–18 done
+**Status at last update:** 26 Nov 2026 ~20:10 WIB (branch
+`day-19-analytics`, Day 19 substance done; master at `b0b4cd4`, PR #6
+merged 26 Nov). `npm run verify` green (70/70 tests on the branch:
+48 baseline + 22 new tests: 11 T-012 + 11 PR #7 follow-up). Day 11–18 done
 (see Week 3/4 below): Day 14 COMPLETE (workflow + guard live, Discussion #16
 submitted); Day 15 submitted (X thread, posts 2–5 unverified); Day 16
 INCOMPLETE (Arnica org-only block, Discussion #18 posted 23 Nov);
 Day 17 ACCEPT (Discussion #19 posted 24 Nov 21:07 WIB); Day 18 COMPLETE
 (red build → Qodo feedback → fix → follow-up runs green, Qodo re-review
-0 bugs; Discussion #20 draft ready, not yet posted). Qodo account signed
-in, repo connected to Qodo.
+0 bugs; Discussion #20 draft ready, not yet posted); Day 19 SUBSTANCE
+DONE, PR #7 FIX IN PROGRESS (T-012 span-undercount rule built + tested,
+factory escalated 3× — twice on false positives, third run authorized by
+the human 19:57 WIB, ESCALATED on already-applied + Qodo CLI unavailable,
+no 4th run; PR #7 created 19:58 WIB, Qodo review found 4 Medium findings,
+fix in progress, merge only after Qodo re-review).
+Qodo account signed in, repo connected to Qodo.
 
 ## How to read this log
 
@@ -112,6 +117,28 @@ PR #6 merged 26 Nov (merge commit be76110); Discussion #20 draft ready, not yet 
 needs the user's GitHub account. Full record:
 evidence/runs/day-18-ci-feedback.json + day18/ (incl.
 qodo-feedback-pr6.md verbatim + day18-draft.md).
+Day 19 arrived 26 Nov 19:02 WIB — SUBSTANCE DONE, GATE ESCALATED
+(question asked + answered from the 6 real Qodo findings on PRs
+#4/#5/#6: one recurring gap, the span-undercount defect, in both zone
+detectors; improvement T-012, a `span-undercount` warning rule in
+`reviewDiff`, branch `day-19-analytics`; local 70/70 + verify green;
+Qodo Analytics not opened — no browser in this session, trial access
+unconfirmed, no Analytics numbers claimed). Factory run on T-012
+escalated TWICE on false-positive blockers from its own FORBIDDEN
+check (run 1: the reviewer's own rule-table messages; run 2: the new
+test file's positive-control fixtures) — both diagnosed and fixed with
+detection untouched. Third run authorized by the human 19:57 WIB
+(record `T-012-2026-11-26T12-57-26-623Z.json`): ESCALATED on
+already-applied (0 files changed) + Qodo CLI unavailable; human
+decision: no 4th run, proceed to PR. PR #7 created 26 Nov 19:58 WIB;
+Qodo review on the PR found 4 Medium findings (~20:00 WIB); fix in
+progress on branch `day-19-analytics` (comment stripping, wider span
+pattern, single-pass extraction; local 70/70 + verify green), merge
+only after Qodo re-review. Discussion #20 draft ready, not yet posted.
+Full record: day19/day-19-analytics.json + day19/day19-draft.md +
+evidence/runs/T-012-2026-11-26T12-52-23-981Z.json +
+T-012-2026-11-26T12-54-08-529Z.json +
+T-012-2026-11-26T12-57-26-623Z.json.
 
 ## Still needs the user
 

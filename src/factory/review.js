@@ -15,8 +15,8 @@ const SECRET_PATTERNS = [
 ];
 
 const FORBIDDEN_IN_DIFF = [
-  { pattern: /\beval\s*\(/, type: 'eval-call', message: 'eval() in the change' },
-  { pattern: /new\s+Function\s*\(/, type: 'function-constructor', message: 'new Function() in the change' },
+  { pattern: /\beval\s*\(/, type: 'eval-call', message: 'dynamic code evaluation call in the change' },
+  { pattern: /new\s+Function\s*\(/, type: 'function-constructor', message: 'dynamic Function constructor call in the change' },
   { pattern: /process\.env\.[A-Z_]+/, type: 'env-access', message: 'direct process.env access in demo code' },
   { pattern: /https?:\/\/(?!localhost|127\.0\.0\.1)/, type: 'external-url', message: 'hardcoded external URL in the change' },
 ];
@@ -85,6 +85,155 @@ export function loadReviewConfig(root) {
 
 const NETWORK_PATTERNS = [/\bfetch\s*\(/, /\bXMLHttpRequest\b/, /\bnew\s+WebSocket\s*\(/];
 const EXTERNAL_URL = /https?:\/\/(?!localhost|127\.0\.0\.1)/;
+
+// A first-to-last sample span compared against a threshold, e.g.
+// `if (end - start >= 250)` or `if ((last - first) >= MIN_ZONE_M)`.
+// Each telemetry sample stands for one SAMPLE_STEP_M segment starting
+// at its distance, so the true covered length is (last - first + step) —
+// comparing the bare span understates every run by one step. The
+// comparison accepts parenthesized subtractions and named thresholds
+// (PR #7 finding 2: `(end - start) >= 250` and `end - start >=
+// MIN_ZONE_M` are the same defect as the bare form); it stays a
+// heuristic warning, not a blocker.
+const SPAN_COMPARISON = /\b(end|last)\s*-\s*(start|first)\s*\)*\s*>=?\s*(\d|[A-Za-z_$(])/;
+
+/**
+ * Remove // and block comments from JS source, preserving line breaks
+ * and string-literal contents. Used by the span rule so a mention of
+ * SAMPLE_STEP_M (or a span comparison) inside a comment cannot stand in
+ * for real code (PR #7 finding 1: a reverted end calculation whose
+ * explanatory comment remains must still be flagged). Assumes no regex
+ * literals containing comment markers (true for the demo detectors
+ * today); string literals are left intact.
+ */
+export function stripComments(source) {
+  let out = '';
+  let i = 0;
+  let quote = null; // "'", '"', or '`' while inside a string literal
+  while (i < source.length) {
+    const ch = source[i];
+    const next = source[i + 1];
+    if (quote) {
+      out += ch;
+      if (ch === '\\') {
+        if (i + 1 < source.length) { out += source[i + 1]; i += 2; continue; }
+      } else if (ch === quote) {
+        quote = null;
+      }
+      i++;
+      continue;
+    }
+    if (ch === "'" || ch === '"' || ch === '`') { quote = ch; out += ch; i++; continue; }
+    if (ch === '/' && next === '/') {
+      while (i < source.length && source[i] !== '\n') { out += ' '; i++; }
+      continue;
+    }
+    if (ch === '/' && next === '*') {
+      out += '  ';
+      i += 2;
+      while (i < source.length && !(source[i] === '*' && source[i + 1] === '/')) {
+        out += source[i] === '\n' ? '\n' : ' ';
+        i++;
+      }
+      if (i < source.length) { out += '  '; i += 2; }
+      continue;
+    }
+    out += ch;
+    i++;
+  }
+  return out;
+}
+
+/**
+ * Split a JS source file into `function NAME(...) {...}` bodies.
+ * Single pass: declarations are collected, then one left-to-right brace
+ * scan matches each declaration's opening brace to its closing brace
+ * with a depth stack — nested declarations are frames on the same stack,
+ * so every character is visited once (PR #7 finding 3: the previous
+ * version rescanned from each declaration's opening brace, which is
+ * quadratic on deeply nested code). The body brace is the first `{`
+ * after the parameter list closes, so a default object parameter
+ * (`function f(o = {}) {...}`) no longer truncates the body. Assumes no
+ * braces inside string literals in the scanned code (true for the demo
+ * detectors today). Returns [{name, body}] in declaration order.
+ */
+export function extractFunctions(source) {
+  const declRe = /(?:export\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/g;
+  const decls = [];
+  let m;
+  while ((m = declRe.exec(source)) !== null) {
+    // Find the matching close paren of the parameter list.
+    let parenDepth = 0;
+    let j = m.index + m[0].length - 1; // index of '('
+    for (; j < source.length; j++) {
+      if (source[j] === '(') parenDepth++;
+      else if (source[j] === ')') {
+        parenDepth--;
+        if (parenDepth === 0) break;
+      }
+    }
+    const open = source.indexOf('{', j);
+    if (open === -1) continue;
+    decls.push({ name: m[1], open, declIndex: m.index });
+  }
+  const byOpen = new Map(decls.map((d) => [d.open, d]));
+  const stack = []; // {name, open, depth, declIndex}
+  const out = [];
+  let depth = 0;
+  for (let i = 0; i < source.length; i++) {
+    const ch = source[i];
+    if (ch === '{') {
+      depth++;
+      const d = byOpen.get(i);
+      if (d) stack.push({ name: d.name, open: i, depth, declIndex: d.declIndex });
+    } else if (ch === '}') {
+      if (stack.length > 0 && stack[stack.length - 1].depth === depth) {
+        const f = stack.pop();
+        out.push({ name: f.name, body: source.slice(f.open, i + 1), declIndex: f.declIndex });
+      }
+      depth--;
+    }
+  }
+  // Unclosed declarations (truncated input): keep the previous behaviour
+  // of returning the body to the end of the input.
+  for (const f of stack) out.push({ name: f.name, body: source.slice(f.open), declIndex: f.declIndex });
+  out.sort((a, b) => a.declIndex - b.declIndex);
+  return out.map(({ name, body }) => ({ name, body }));
+}
+
+/**
+ * Day 19 (T-012) — span-undercount rule.
+ *
+ * Qodo caught the same defect twice: detectBrakingZones (PR #5, Medium,
+ * T-009) and detectDrsZones (PR #6, Medium Reliability, T-010) both
+ * measured a run first-to-last sample and compared the span against a
+ * threshold, so a run covering exactly the threshold was dropped. A
+ * detector body that compares a span against a number WITHOUT adding
+ * SAMPLE_STEP_M in the code of the same body repeats that defect.
+ * Mentions inside comments do not count (PR #7 finding 1): a reverted
+ * end calculation whose explanatory comment remains must still be
+ * flagged. The comparison also matches parenthesized subtractions and
+ * named thresholds (PR #7 finding 2).
+ *
+ * Severity is 'warning', not 'blocker': the pattern is heuristic and a
+ * human must confirm the finding (the T-009/T-010 fixes show what the
+ * corrected form looks like). Returns [] when nothing matches.
+ */
+export function checkSpanUndercount(source) {
+  const findings = [];
+  for (const { name, body } of extractFunctions(source)) {
+    const code = stripComments(body);
+    if (SPAN_COMPARISON.test(code) && !code.includes('SAMPLE_STEP_M')) {
+      findings.push({
+        severity: 'warning',
+        type: 'span-undercount',
+        function: name,
+        message: `${name} compares a first-to-last sample span against a threshold without adding SAMPLE_STEP_M — the same one-step undercount Qodo flagged in detectBrakingZones (PR #5, T-009) and detectDrsZones (PR #6, T-010); a run covering exactly the threshold is dropped`,
+      });
+    }
+  }
+  return findings;
+}
 
 /**
  * Custom-profile findings: the Day 11 setup. Same changed files, reviewed
@@ -156,6 +305,13 @@ export function reviewDiff(root, changes, ticket, opts = {}) {
     for (const { pattern, type, message } of forbidden) {
       if (pattern.test(after)) {
         findings.push({ severity: 'blocker', type, message: `${message} (${file})`, file });
+      }
+    }
+    // Day 19 (T-012) — span-undercount rule, demo code only. Runs in both
+    // profiles: the defect pattern is product-independent.
+    if (file.startsWith('src/demo/') && /\.(m?js)$/.test(file)) {
+      for (const f of checkSpanUndercount(after)) {
+        findings.push({ ...f, file });
       }
     }
     // Syntax check for JS files.
