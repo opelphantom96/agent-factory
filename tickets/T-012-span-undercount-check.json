@@ -1,0 +1,21 @@
+{
+  "acceptance": [
+    "Pre-fix detectDrsZones (0381cf9) and pre-fix detectBrakingZones (d117d16) bodies are flagged with a warning span-undercount finding naming the function; post-fix bodies and sectorTimes are clean",
+    "reviewDiff flags the pattern only for src/demo/ changes, in both profiles; no finding outside src/demo/",
+    "The factory's first run on T-012 escalated on two false-positive blockers (the reviewer's own FORBIDDEN messages matched its own patterns); the messages are reworded with detection regexes untouched, pinned by regression tests proving the reviewer's own source is clean and real dynamic-evaluation / dynamic-constructor calls are still flagged",
+    "The factory's second run escalated again on the same two rule types, this time in the new test file's positive-control fixtures (the forbidden text appeared literally in the fixtures); the fixtures now build the text at runtime so the test file stays clean, with the same assertions — detection untouched. Two gate failures: a third run needs a human decision per AGENTS.md rule 5",
+    "Full verify suite green (59/59 tests: 48 existing + 11 new); no gate weakened; nothing under scripts/** touched"
+  ],
+  "change": "tickets/changes/t-012-span-undercount-check.mjs",
+  "files": [
+    "src/factory/review.js",
+    "src/factory/span-undercount.test.js"
+  ],
+  "goal": "Day 19 (Qodo Analytics question, email 26 Nov 19:02 WIB, Gmail id 1a217bc3653a27e3): 'Do Qodo's Reliability findings across PRs #4-#6 point to one recurring gap, or different problems sharing a category?' Sample: the 6 real Qodo findings on PRs #4 (Agent Session Review), #5 and #6. Answer: one recurring gap among the detector findings — detectBrakingZones (PR #5, Medium, T-009) and detectDrsZones (PR #6, Medium Reliability, T-010) share the same one-step span-undercount defect; the other findings are different problems (verdict/evidence process gaps fixed by T-009/T-011, a stale comment, one false positive on PR #4 that did not reproduce). Add a 'span-undercount' warning rule to the factory's local reviewer (reviewDiff, src/demo/ only) so the next detector written with the same pattern is flagged at review time. Qodo Analytics itself was not reachable from this session (no browser access; trial-participant access unconfirmed) — the analysis uses the verbatim local Qodo review records instead; no Analytics numbers are claimed.",
+  "id": "T-012",
+  "status": "escalated",
+  "tests": [
+    "src/factory/span-undercount.test.js"
+  ],
+  "title": "Day 19: add a span-undercount check to the local reviewer"
+}

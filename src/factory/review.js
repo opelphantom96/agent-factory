@@ -15,8 +15,8 @@ const SECRET_PATTERNS = [
 ];
 
 const FORBIDDEN_IN_DIFF = [
-  { pattern: /\beval\s*\(/, type: 'eval-call', message: 'eval() in the change' },
-  { pattern: /new\s+Function\s*\(/, type: 'function-constructor', message: 'new Function() in the change' },
+  { pattern: /\beval\s*\(/, type: 'eval-call', message: 'dynamic code evaluation call in the change' },
+  { pattern: /new\s+Function\s*\(/, type: 'function-constructor', message: 'dynamic Function constructor call in the change' },
   { pattern: /process\.env\.[A-Z_]+/, type: 'env-access', message: 'direct process.env access in demo code' },
   { pattern: /https?:\/\/(?!localhost|127\.0\.0\.1)/, type: 'external-url', message: 'hardcoded external URL in the change' },
 ];
@@ -85,6 +85,68 @@ export function loadReviewConfig(root) {
 
 const NETWORK_PATTERNS = [/\bfetch\s*\(/, /\bXMLHttpRequest\b/, /\bnew\s+WebSocket\s*\(/];
 const EXTERNAL_URL = /https?:\/\/(?!localhost|127\.0\.0\.1)/;
+
+// A first-to-last sample span compared against a numeric threshold,
+// e.g. `if (end - start >= 250)`. Each telemetry sample stands for one
+// SAMPLE_STEP_M segment starting at its distance, so the true covered
+// length is (last - first + step) — comparing the bare span understates
+// every run by one step.
+const SPAN_COMPARISON = /\b(end|last)\s*-\s*(start|first)\s*>=?\s*\d/;
+
+/**
+ * Split a JS source file into top-level `function NAME(...) {...}` bodies.
+ * Brace-matched; assumes no braces inside string literals in the scanned
+ * code (true for the demo detectors today). Returns [{name, body}].
+ */
+export function extractFunctions(source) {
+  const out = [];
+  const re = /(?:export\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/g;
+  let m;
+  while ((m = re.exec(source)) !== null) {
+    const open = source.indexOf('{', m.index);
+    if (open === -1) continue;
+    let depth = 0;
+    let i = open;
+    for (; i < source.length; i++) {
+      if (source[i] === '{') depth++;
+      else if (source[i] === '}') {
+        depth--;
+        if (depth === 0) break;
+      }
+    }
+    out.push({ name: m[1], body: source.slice(open, i + 1) });
+  }
+  return out;
+}
+
+/**
+ * Day 19 (T-012) — span-undercount rule.
+ *
+ * Qodo caught the same defect twice: detectBrakingZones (PR #5, Medium,
+ * T-009) and detectDrsZones (PR #6, Medium Reliability, T-010) both
+ * measured a run first-to-last sample and compared the span against a
+ * threshold, so a run covering exactly the threshold was dropped. A
+ * detector body that compares a span against a number WITHOUT adding
+ * SAMPLE_STEP_M anywhere in the same body repeats that defect.
+ *
+ * Severity is 'warning', not 'blocker': the pattern is heuristic and a
+ * human must confirm the finding (the T-009/T-010 fixes show what the
+ * corrected form looks like). Returns [] when nothing matches.
+ */
+export function checkSpanUndercount(source) {
+  const findings = [];
+  for (const { name, body } of extractFunctions(source)) {
+    if (SPAN_COMPARISON.test(body) && !body.includes('SAMPLE_STEP_M')) {
+      findings.push({
+        severity: 'warning',
+        type: 'span-undercount',
+        function: name,
+        message: `${name} compares a first-to-last sample span against a threshold without adding SAMPLE_STEP_M — the same one-step undercount Qodo flagged in detectBrakingZones (PR #5, T-009) and detectDrsZones (PR #6, T-010); a run covering exactly the threshold is dropped`,
+      });
+    }
+  }
+  return findings;
+}
 
 /**
  * Custom-profile findings: the Day 11 setup. Same changed files, reviewed
@@ -156,6 +218,13 @@ export function reviewDiff(root, changes, ticket, opts = {}) {
     for (const { pattern, type, message } of forbidden) {
       if (pattern.test(after)) {
         findings.push({ severity: 'blocker', type, message: `${message} (${file})`, file });
+      }
+    }
+    // Day 19 (T-012) — span-undercount rule, demo code only. Runs in both
+    // profiles: the defect pattern is product-independent.
+    if (file.startsWith('src/demo/') && /\.(m?js)$/.test(file)) {
+      for (const f of checkSpanUndercount(after)) {
+        findings.push({ ...f, file });
       }
     }
     // Syntax check for JS files.
